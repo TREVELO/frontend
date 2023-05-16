@@ -3,10 +3,10 @@
   <div id="app">
 
     <div id="header">
-      <main-header/>
+      <main-header />
     </div>
 
-    <router-view/>
+    <router-view />
 
     <div id="footer">
       <!-- <main-footer/> -->
@@ -15,14 +15,14 @@
 </template>
 
 <script>
-  import MainHeader from "./components/Main-Header.vue"
+import MainHeader from "./components/Main-Header.vue"
 
-  export default{
-    name : 'app',
-    components :{
-      'main-header' : MainHeader
-    }
+export default {
+  name: 'app',
+  components: {
+    'main-header': MainHeader
   }
+}
 </script>
 
 <style>
