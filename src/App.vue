@@ -2,30 +2,23 @@
 <template>
   <div id="app">
 
-    <div id="header">
-      <main-header />
-    </div>
-
     <router-view />
 
-  <!-- <div id="footer">
-      <main-footer />
-      </div> -->
   </div>
 </template>
 
 <script>
-import MainHeader from "./components/Main-Header.vue"
+
 
 export default {
   name: 'app',
   components: {
-    'main-header': MainHeader,
+
   }
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
