@@ -25,6 +25,16 @@ const routes = [
         path: "write",
         name: "BoardWrite",
         component: () => import("@/components/AppBoard/BoardWrite")
+      },
+      {
+        path: "View",
+        name: "BoardView",
+        component : () => import("@/components/AppBoard/BoardView")
+      },
+      {
+        path: "Modify",
+        name: "BoardModify",
+        component : () => import("@/components/AppBoard/BoardModify")
       }
     ]
   }

@@ -16,10 +16,10 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-table striped hover :items="articles" :fields="fields">
+                    <b-table striped hover :items="articles" :fields="fields"  @row-clicked="viewArticle" >
                         <template #cell(subject)="data">
-                            <router-link :to="{ name: 'boardview', params: { articleno: data.item.boardId } }">
-                                {{ data.item.subject }}
+                            <router-link :to="{ name: 'BoardList', params: { articleno: data.item.boardId } }">
+                                {{ data.item.title }}
                             </router-link>
                         </template>
                     </b-table>
@@ -38,21 +38,25 @@ export default {
         return {
             articles: [],
             fields: [
-                // { key: "boardId", label: "글번호" },
-                { key: "title", label: "제목" },
+                { key: "boardId", label: "글번호" },
                 { key: "memberId", label: "멤버번호" },
+                { key: "title", label: "제목" },
                 { key: "hit", label: "조회수" },
                 { key: "createdat", label: "작성날짜" }
             ]
         }
     },
     created() {
+        console.log("created 실행")
         axios.get('http://localhost/api/v1/board/list')
             .then((res) => {
-                // console.log(res.data);
+                console.log("리스트")
                 this.articles = res.data
                 for (let index = 0; index < this.articles.length; index++) {
                     // console.log(this.articles[index].createdat.substring(0, 10))
+                    if (this.articles[index].updatedat !== null) {
+                        this.articles[index].createdat = this.articles[index].updatedat;
+                    }
                     let a = this.articles[index].createdat.substring(0, 10);
                     let b = this.articles[index].createdat.substring(11, this.articles[index].length);
                     // console.log(a);
@@ -66,7 +70,13 @@ export default {
     methods: {
         moveWrite() {
             this.$router.push({ path: "write" })
-        }
+        },
+        viewArticle(article) {
+            this.$router.push({
+                name: "BoardView",
+                params: { articleno: article.boardId },
+            });
+        },
     }
 }
 </script>
