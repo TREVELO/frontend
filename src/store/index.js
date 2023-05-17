@@ -7,6 +7,7 @@ import memberStore from "@/store/modules/memberStore";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+<<<<<<< HEAD
     modules: {
         memberStore,
     },
@@ -16,3 +17,16 @@ export default new Vuex.Store({
         }),
     ],
 });
+=======
+  state: {
+  },
+  getters: {
+  },
+  mutations: {
+  },
+  actions: {
+  },
+  modules: {
+  }
+})
+>>>>>>> 2f4562d4bf3cb188f5314537fbbd8a1a2a0d7efc

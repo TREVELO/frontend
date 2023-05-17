@@ -1,20 +1,32 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AppBoard from '../views/AppBoard.vue'
+import AppHome from '../views/AppHome.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '',
+    name: 'AppHomeVue',
+    component: AppHome
   },
   {
     path: '/board',
     name: "board",
-    component: AppBoard,
+    component: () => import("@/views/AppBoard"),
+    redirect: "/board/list",
+    children: [
+      {
+        path: "list",
+        name: "BoardList",
+        component: () => import("@/components/AppBoard/BoardList")
+      },
+      {
+        path: "write",
+        name: "BoardWrite",
+        component: () => import("@/components/AppBoard/BoardWrite")
+      }
+    ]
   }
 ]
 
