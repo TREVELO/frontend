@@ -8,31 +8,45 @@
                     <div class="modal-header">
                         <h3 slot="header">로그인</h3>
                         <button class="modal-default-button" @click="$emit('close')">
-                            닫기
+                            X
                         </button>
                     </div>
 
                     <div class="modal-body">
                         <slot name="body">
-                            <form action="">
-                                <div>
-                                    <input type="email" class="form-control" id="email1"
-                                        placeholder="Your email address...">
+                            <form @submit.prevent="login">
+                                <div class="form-group">
+                                    <input type="text" v-model="form.loginId" class="form-control" id="loginId"
+                                        placeholder="Your login id...">
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" id="password1"
+                                    <input type="password" v-model="form.loginPassword" class="form-control" id="password"
                                         placeholder="Your password...">
                                 </div>
                                 <div>
-                                    <button type="button" class="btn btn-info btn-block btn-round">Login</button>
+                                    <button type="submit" class="btn btn-info btn-block btn-round">Login</button>
                                 </div>
                             </form>
                         </slot>
                     </div>
 
+                <div class="signup-section model-footer" style="text-align: center;">
+                    <p v-if="errorshow" >
+                        <ul id = "errorMsg">
+                            <li v-for="error in errors" :key="error">
+                                <b>{{error}}</b>
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+                            
 
-                    <div class="signup-section model-footer" style="text-align: center;">Not a member yet? <a href="#a"
-                            class="text-info"> Sign Up</a>.
+                    <div class="signup-section model-footer" style="text-align: center;">회원이 아니신가요? <a href="#a"
+                            class="text-info"> 회원 가입</a>.
+                    </div>
+
+                    <div class="signup-section model-footer" style="text-align: center;">비밀번호를 잊으셨나요? <a href="#a"
+                            class="text-info"> 비밀번호 찾기</a>.
                     </div>
 
                 </div>
@@ -42,10 +56,62 @@
 </template>
   
 <script>
-export default {}
+import axios from "axios";
+
+export default {
+    data() {
+        return {
+            form: {
+                loginId: '',
+                loginPassword: '',
+            },
+            errors:[],
+            errorshow: false,
+        }
+    },
+    methods: {
+        validationCheck() {
+            this.errors = [];
+            if(!this.form.loginId) {
+                this.errors.push("아이디를 입력해주세요.");
+            }
+            if(!this.form.loginPassword) {
+                this.errors.push("비밀번호를 입력해주세요.");
+            }
+            if(!this.errorshow) {
+                this.errorshow = true;
+            }
+        },
+        async login() {
+            console.log("login request");
+            console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
+            this.validationCheck();
+            console.log(this.errors);
+            if(this.errors.length === 0) {
+                console.log(this.form);
+
+                await axios.post('http://localhost/api/v1/member/login', this.form)
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            }
+
+            
+        }
+    }
+}
 </script>
 
-<style>
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap');
+
+*{
+    font-family: 'Open Sans', sans-serif;
+}
+
 .modal-mask {
     position: fixed;
     z-index: 9998;
@@ -91,6 +157,9 @@ export default {}
 
 .modal-default-button {
     float: right;
+    border: #fff;
+    color: gray;
+    background: #fff;
 }
 
 
@@ -118,5 +187,11 @@ export default {}
 .modal-leave-active .modal-container {
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
+}
+
+#errorMsg{
+    color: crimson;
+    font-size: 15px;
+    list-style: none;
 }
 </style>
