@@ -8,9 +8,9 @@
 
     <router-view />
 
-    <div id="footer">
-      <!-- <main-footer/> -->
-    </div>
+  <!-- <div id="footer">
+      <main-footer />
+      </div> -->
   </div>
 </template>
 
@@ -20,7 +20,7 @@ import MainHeader from "./components/Main-Header.vue"
 export default {
   name: 'app',
   components: {
-    'main-header': MainHeader
+    'main-header': MainHeader,
   }
 }
 </script>
