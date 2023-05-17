@@ -17,11 +17,13 @@
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "i": "^0.3.7",
+    "jwt-decode": "^3.1.2",
     "vue": "^2.6.14",
     "vue-js-modal": "^2.0.1",
     "vue-router": "^3.5.1",
     "vue-strap": "^1.1.40",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
