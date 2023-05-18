@@ -94,7 +94,7 @@ export default {
             console.log("login request");
             console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
             this.validationCheck();
-            console.log(this.errors);
+            // console.log(this.errors);
             if (this.errors.length === 0) {
                 console.log(this.form);
 
@@ -119,7 +119,7 @@ export default {
                     this.$store.dispatch("memberStore/fetchUserinfo");
                     console.log("유저 정보")
                     console.log(this.$store.getters["memberStore/getUserinfo"]);
-
+                    console.log(sessionStorage.getItem("userinfo"))
                     sessionStorage.setItem("userinfo", this.$store.getters["memberStore/getUserinfo"])
                     console.log(sessionStorage.getItem("userinfo"))
                 } catch (error) {

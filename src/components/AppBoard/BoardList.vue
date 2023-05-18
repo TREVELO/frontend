@@ -50,7 +50,8 @@ export default {
     },
     created() {
         this.userinfo = sessionStorage.getItem("userinfo");
-        console.log(this.userinfo);
+        console.log("userinfo")
+        console.log(this.userinfo.name);
         this.userId = memberStore.state.userinfo
         console.log("created 실행")
         axiosInstance.get('http://localhost/api/v1/board/list')
@@ -72,13 +73,13 @@ export default {
             .catch((err) =>
                 console.log(err));
 
-        this.$store.dispatch('memberStore/decodeToken')
-            .then(decodedToken => {
-                this.userId = decodedToken.loginId;
-                console.log(this.userId);
-            }).catch(error => {
-                console.log(error);
-            })
+        // this.$store.dispatch('memberStore/decodeToken')
+        //     .then(decodedToken => {
+        //         this.userId = decodedToken.loginId;
+        //         console.log(this.userId);
+        //     }).catch(error => {
+        //         console.log(error);
+        //     })
 
     },
     methods: {
