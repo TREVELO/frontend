@@ -5,7 +5,11 @@ const memberStore = {
     namespaced: true,
     state: {
         token: null, // 토큰 상태
+<<<<<<< HEAD
         userinfo: null,
+=======
+        userinfo: null, // 사용자 정보 상태
+>>>>>>> 3aa72f61bc4a843629f66425d40f448110f7374b
     },
     mutations: {
         SET_TOKEN(state, token) {
@@ -26,6 +30,7 @@ const memberStore = {
             }
             return null;
         },
+<<<<<<< HEAD
         async fetchUserinfo({ commit }) {
             try {
                 const response = await axiosInstance.get("/member/mypage"); // /mypage로 GET 요청 보내기
@@ -34,6 +39,17 @@ const memberStore = {
             } catch (error) {
                 console.error(error);
             }
+=======
+        fetchUserinfo({ commit }) {
+            axiosInstance.get("/mypage")
+                .then(response => {
+                    const userinfo = response.data; // 응답 데이터에서 사용자 정보 추출
+                    commit("SET_USERINFO", userinfo); // SET_USERINFO 뮤테이션을 호출하여 사용자 정보 설정
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+>>>>>>> 3aa72f61bc4a843629f66425d40f448110f7374b
         },
     },
     getters: {

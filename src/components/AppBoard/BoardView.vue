@@ -14,17 +14,15 @@
           <b-button variant="outline-primary" @click="moveList">목록</b-button>
         </b-col>
         <b-col class="text-right">
-          <b-button variant="outline-info" size="sm" @click="moveModifyArticle" class="mr-2"
-            v-if="userId === article.boardId">글수정</b-button>
-          <b-button variant=" outline-danger" size="sm" @click="deleteArticle"
-            v-if="userId === article.boardId">글삭제</b-button>
+          <b-button variant="outline-info" size="sm" @click="moveModifyArticle" class="mr-2">글수정</b-button>
+          <b-button variant=" outline-danger" size="sm" @click="deleteArticle">글삭제</b-button>
         </b-col>
       </b-row>
       <b-row class="mb-1">
         <b-col>
           <b-card
             :header-html="`<h3>${article.boardId}.
-                                                                                  ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
+                                                                                                                                                                                                                                                                                                                  ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
             class="mb-2" border-variant="dark" no-body>
             <!-- <b-card-body class="text-left">
             <div v-html="message"></div>
@@ -45,7 +43,7 @@ export default {
   data() {
     return {
       article: {},
-      userId: "",
+      userinfo: [],
     };
   },
   created() {
@@ -64,16 +62,20 @@ export default {
         data.createdat = a + " " + b;
         this.article = data;
       })
-    this.$store.dispatch('memberStore/decodeToken')
-      .then(decodedToken => {
-        this.userId = decodedToken.loginId;
-        console.log(this.userId);
-      }).catch(error => {
-        console.log(error);
+
+    this.$store.dispatch('memberStore/fetchUserinfo')
+      .then(() => {
+        // 사용자 정보를 가져왔을 때 필요한 작업 수행
+        this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+        console.log(this.userinfo);
       })
+      .catch(error => {
+        // 오류 처리
+        console.error(error)
+      });
   },
   methods: {
-    ...mapActions("memberStore", ["decodeToken"]),
+    ...mapActions("memberStore", ["decodeToken", "fetchUserinfo"]),
     moveModifyArticle() {
       console.log(this.article.boardId);
       this.$router.replace({
