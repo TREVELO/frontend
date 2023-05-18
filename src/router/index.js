@@ -41,8 +41,6 @@ const routes = [
     path: "/map",
     name: "map",
     component: () => import("@/views/AppMap"),
-    children: [
-    ]
   }
 ]
 

@@ -55,9 +55,11 @@ export default {
   },
   methods: {
     Logout() {
-      this.$store.dispatch('memberStore/resetMemberState');
-      sessionStorage.clear();
-      window.location.reload(true)
+      if (confirm('로그아웃하시겠습니까??')) {
+        this.$store.dispatch('memberStore/resetMemberState');
+        sessionStorage.clear();
+        window.location.reload(true)
+      }
     },
     mainHeaderReload() {
       window.location.reload(true)

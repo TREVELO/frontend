@@ -4,7 +4,7 @@
       <main-header />
       <sub-header></sub-header>
     </div>
-    Home창
+    <b>Home창</b>
   </div>
 </template>
 

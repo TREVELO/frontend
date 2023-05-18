@@ -114,19 +114,15 @@ export default {
                     console.log(this.$store.getters["memberStore/getToken"]);
                     console.log(sessionStorage.getItem("token"));
 
-                    alert("userinfo 생성");
                     try {
                         this.userinfo = this.$store.dispatch("memberStore/fetchUserinfo");
-                        alert("성공");
                     } catch (err) {
                         console.log(err);
-                        alert(err);
                     }
 
                     console.log("유저 정보")
                     this.$emit('close');
-                    //window.location.reload(true)
-                    //{ MainHeaderVue.mainHeaderReload() }
+                    
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];
