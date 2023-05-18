@@ -1,10 +1,11 @@
 import jwtDecode from "jwt-decode";
+import axiosInstance from "@/api/axiosInstance";
 
 const memberStore = {
     namespaced: true,
     state: {
         token: null, // 토큰 상태
-        userinfo: null, // 사용자 정보 상태
+        userinfo: null,
     },
     mutations: {
         SET_TOKEN(state, token) {
@@ -27,6 +28,15 @@ const memberStore = {
                 return userinfo; // 추출한 사용자 정보 반환
             }
             return null;
+        },
+        async fetchUserinfo({ commit }) {
+            try {
+                const response = await axiosInstance.get("/member/mypage"); // /mypage로 GET 요청 보내기
+                const userinfo = response.data; // 응답 데이터에서 사용자 정보 추출
+                commit("SET_USERINFO", userinfo); // SET_USERINFO 뮤테이션을 호출하여 사용자 정보 설정
+            } catch (error) {
+                console.error(error);
+            }
         },
     },
     getters: {

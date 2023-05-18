@@ -45,11 +45,12 @@ export default {
                 { key: "hit", label: "조회수" },
                 { key: "createdat", label: "작성날짜" }
             ],
-            userId: "",
+            userinfo: [],
         }
     },
     created() {
-        console.log(memberStore.state.userinfo)
+        this.userinfo = sessionStorage.getItem("userinfo");
+        console.log(this.userinfo);
         this.userId = memberStore.state.userinfo
         console.log("created 실행")
         axiosInstance.get('http://localhost/api/v1/board/list')
@@ -78,6 +79,7 @@ export default {
             }).catch(error => {
                 console.log(error);
             })
+
     },
     methods: {
         moveWrite() {

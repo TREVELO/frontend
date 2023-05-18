@@ -57,9 +57,8 @@
   
 <script>
 import axios from "axios";
-import { mapActions } from "vuex";
-import jwtDecode from "jwt-decode";
 // import memberStore from "@/store/modules/memberStore";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     data() {
@@ -72,8 +71,12 @@ export default {
             errorshow: false,
         }
     },
+    computed: {
+        ...mapGetters("memberStore", ["getUserinfo"]),
+    },
+
     methods: {
-        ...mapActions("memberStore", ["setToken", "decodeToken"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
+        ...mapActions("memberStore", ["setToken", "getToken", "fetchUserinfo"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
 
         validationCheck() {
             this.errors = [];
@@ -97,6 +100,8 @@ export default {
 
                 try {
                     const response = await axios.post('http://localhost/api/v1/member/login', this.form);
+                    console.log(response.data);
+
                     const token = response.data; // 응답에서 토큰 추출
 
                     // 토큰을 세션 스토리지에 저장
@@ -104,14 +109,19 @@ export default {
 
                     // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
                     this.$store.dispatch("memberStore/setToken", token);
+                    console.log(token);
+                    console.log("token is");
+                    console.log(this.$store.getters["memberStore/getToken"]);
+                    console.log(sessionStorage.getItem("token"));
 
-                    // 토큰을 디코드하여 사용자 정보 추출
-                    const decodedToken = jwtDecode(token);
-                    const userinfo = decodedToken;
+                    console.log("userinfo 생성");
 
-                    // Vuex의 memberStore 모듈의 setUserinfo 액션을 호출하여 사용자 정보 설정
-                    this.$store.dispatch("memberStore/SET_USERINFO", userinfo);
-                    console.log(userinfo);
+                    this.$store.dispatch("memberStore/fetchUserinfo");
+                    console.log("유저 정보")
+                    console.log(this.$store.getters["memberStore/getUserinfo"]);
+
+                    sessionStorage.setItem("userinfo", this.$store.getters["memberStore/getUserinfo"])
+                    console.log(sessionStorage.getItem("userinfo"))
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];
