@@ -11,27 +11,17 @@
             </b-row>
             <b-row class="mb-1">
                 <b-col class="text-right">
-                    <b-button variant="outline-primary" @click="moveWrite()" v-if="userId"
-                        >글쓰기</b-button
-                    >
+                    <b-button variant="outline-primary" @click="moveWrite()">글쓰기</b-button>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col>
-                    <b-table
-                        striped
-                        hover
-                        :items="articles"
-                        :fields="fields"
-                        @row-clicked="viewArticle"
-                    >
+                    <b-table striped hover :items="articles" :fields="fields" @row-clicked="viewArticle">
                         <template #cell(subject)="data">
-                            <router-link
-                                :to="{
-                                    name: 'BoardList',
-                                    params: { articleno: data.item.boardId },
-                                }"
-                            >
+                            <router-link :to="{
+                                name: 'BoardList',
+                                params: { articleno: data.item.boardId },
+                            }">
                                 {{ data.item.title }}
                             </router-link>
                         </template>
@@ -44,8 +34,6 @@
 <!-- @row-clicked="viewArticle" -->
 <script>
 import axiosInstance from "@/api/axiosInstance";
-import memberStore from "@/store/modules/memberStore";
-import { mapGetters } from "vuex";
 
 export default {
     name: "BoardList",
@@ -59,17 +47,9 @@ export default {
                 { key: "hit", label: "조회수" },
                 { key: "createdat", label: "작성날짜" },
             ],
-            userinfo: [],
         };
     },
-    computed: {
-        ...mapGetters("memberStore", ["getUserinfo"]),
-    },
     created() {
-        this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-        console.log(this.userinfo);
-        console.log(this.userinfo.name);
-        this.userId = memberStore.state.userinfo;
         console.log("created 실행");
         axiosInstance
             .get("http://localhost/api/v1/board/list")
@@ -100,17 +80,24 @@ export default {
         //     }).catch(error => {
         //         console.log(error);
         //     })
+
     },
     methods: {
         moveWrite() {
             this.$router.push({ path: "write" });
         },
         viewArticle(article) {
+            // this.uphit(article);
+            console.log("게시글 이동")
+            console.log(article.boardId);
             this.$router.push({
                 name: "BoardView",
                 params: { articleno: article.boardId },
             });
         },
+        // uphit(article) {
+        //     console.log("조회수 증가")
+        // }
     },
 };
 </script>

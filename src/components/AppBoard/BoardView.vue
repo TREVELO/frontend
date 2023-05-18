@@ -14,15 +14,17 @@
           <b-button variant="outline-primary" @click="moveList">목록</b-button>
         </b-col>
         <b-col class="text-right">
-          <b-button variant="outline-info" size="sm" @click="moveModifyArticle" class="mr-2">글수정</b-button>
-          <b-button variant=" outline-danger" size="sm" @click="deleteArticle">글삭제</b-button>
+          <b-button variant="outline-info" size="sm" @click="moveModifyArticle" class="mr-2"
+            v-if="article.memberId === userinfo.id">글수정</b-button>
+          <b-button variant="outline-danger" size="sm" @click="deleteArticle" class="mr-2"
+            v-if="article.memberId === userinfo.id">글삭제</b-button>
         </b-col>
       </b-row>
       <b-row class="mb-1">
         <b-col>
           <b-card
             :header-html="`<h3>${article.boardId}.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
             class="mb-2" border-variant="dark" no-body>
             <!-- <b-card-body class="text-left">
             <div v-html="message"></div>
@@ -38,10 +40,8 @@
 import axiosInstance from "@/api/axiosInstance";
 // import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
-import memberStore from "@/store/modules/memberStore";
 
 export default {
-  ...mapGetters("memberStore", ['getUserinfo']),
   name: "BoardDetail",
   data() {
     return {
@@ -50,8 +50,11 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("memberStore", ["getUserinfo"])
   },
   created() {
+    this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+    console.log(this.userinfo)
     let param = this.$route.params.articleno;
     console.log(param)
     axiosInstance.get('http://localhost/api/v1/board/view/' + param)
@@ -67,7 +70,6 @@ export default {
         data.createdat = a + " " + b;
         this.article = data;
       })
-    this.userinfo = memberStore.state.userinfo
     console.log(this.userinfo)
     // this.$store.dispatch('memberStore/fetchUserinfo')
     //   .then(() => {

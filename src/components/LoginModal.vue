@@ -118,6 +118,8 @@ export default {
 
                     this.$store.dispatch("memberStore/fetchUserinfo");
                     console.log("유저 정보")
+                    this.$emit('close');
+                    window.location.reload(true);
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];
