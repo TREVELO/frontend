@@ -29,13 +29,25 @@ const routes = [
       {
         path: "View",
         name: "BoardView",
-        component : () => import("@/components/AppBoard/BoardView")
+        component: () => import("@/components/AppBoard/BoardView")
       },
       {
         path: "Modify",
         name: "BoardModify",
-        component : () => import("@/components/AppBoard/BoardModify")
+        component: () => import("@/components/AppBoard/BoardModify")
       }
+    ]
+  },
+  {
+    path: '',
+    name: "AppMypage",
+    component: () => import("@/views/AppMypage"),
+    children: [
+      {
+        path: "View",
+        name: "MyPageView",
+        component: () => import("@/components/AppMypage/MypageView")
+      },
     ]
   }
 ]

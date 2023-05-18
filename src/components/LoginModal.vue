@@ -30,16 +30,16 @@
                         </slot>
                     </div>
 
-                <div class="signup-section model-footer" style="text-align: center;">
-                    <p v-if="errorshow" >
-                        <ul id = "errorMsg">
+                    <div class="signup-section model-footer" style="text-align: center;">
+                        <p v-if="errorshow">
+                        <ul id="errorMsg">
                             <li v-for="error in errors" :key="error">
-                                <b>{{error}}</b>
+                                <b>{{ error }}</b>
                             </li>
                         </ul>
-                    </p>
-                </div>
-                            
+                        </p>
+                    </div>
+
 
                     <div class="signup-section model-footer" style="text-align: center;">회원이 아니신가요? <a href="#a"
                             class="text-info"> 회원 가입</a>.
@@ -57,7 +57,9 @@
   
 <script>
 import axios from "axios";
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
+import jwtDecode from "jwt-decode";
+// import memberStore from "@/store/modules/memberStore";
 
 export default {
     data() {
@@ -66,66 +68,68 @@ export default {
                 loginId: '',
                 loginPassword: '',
             },
-            errors:[],
+            errors: [],
             errorshow: false,
         }
     },
     methods: {
-         ...mapActions("memberStore", ["setToken", "getToken"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
+        ...mapActions("memberStore", ["setToken", "decodeToken"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
 
         validationCheck() {
             this.errors = [];
-            if(!this.form.loginId) {
+            if (!this.form.loginId) {
                 this.errors.push("아이디를 입력해주세요.");
             }
-            if(!this.form.loginPassword) {
+            if (!this.form.loginPassword) {
                 this.errors.push("비밀번호를 입력해주세요.");
             }
-            if(!this.errorshow) {
+            if (!this.errorshow) {
                 this.errorshow = true;
             }
         },
-async login() {
-  console.log("login request");
-  console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
-  this.validationCheck();
-  console.log(this.errors);
-  if (this.errors.length === 0) {
-    console.log(this.form);
+        async login() {
+            console.log("login request");
+            console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
+            this.validationCheck();
+            console.log(this.errors);
+            if (this.errors.length === 0) {
+                console.log(this.form);
 
-    try {
-      const response = await axios.post('http://localhost/api/v1/member/login', this.form);
-      console.log(response.data);
+                try {
+                    const response = await axios.post('http://localhost/api/v1/member/login', this.form);
+                    const token = response.data; // 응답에서 토큰 추출
 
-      const token = response.data; // 응답에서 토큰 추출
+                    // 토큰을 세션 스토리지에 저장
+                    sessionStorage.setItem("token", token);
 
-      // 토큰을 세션 스토리지에 저장
-      sessionStorage.setItem("token", token);
+                    // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
+                    this.$store.dispatch("memberStore/setToken", token);
 
-      // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
-      this.$store.dispatch("memberStore/setToken", token);
-      console.log(token);
-      console.log("token is");
-      console.log(this.$store.getters["memberStore/getToken"]);
-      console.log(sessionStorage.getItem("token"));
-    } catch (error) {
-      console.log(error.response.data);
-      this.errors = [];
-      this.errors.push(error.response.data);
-      if (!this.errorshow) {
-        this.errorshow = true;
-      }
+                    // 토큰을 디코드하여 사용자 정보 추출
+                    const decodedToken = jwtDecode(token);
+                    const userinfo = decodedToken;
+
+                    // Vuex의 memberStore 모듈의 setUserinfo 액션을 호출하여 사용자 정보 설정
+                    this.$store.dispatch("memberStore/SET_USERINFO", userinfo);
+                    console.log(userinfo);
+                } catch (error) {
+                    console.log(error.response.data);
+                    this.errors = [];
+                    this.errors.push(error.response.data);
+                    if (!this.errorshow) {
+                        this.errorshow = true;
+                    }
+                }
+            }
+        }
     }
-  }
-}
-  }
 }
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap');
 
-*{
+* {
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -206,7 +210,7 @@ async login() {
     transform: scale(1.1);
 }
 
-#errorMsg{
+#errorMsg {
     color: crimson;
     font-size: 13px;
     list-style: none;

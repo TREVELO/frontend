@@ -31,6 +31,7 @@
 <!-- @row-clicked="viewArticle" -->
 <script>
 import axiosInstance from "@/api/axiosInstance";
+import memberStore from "@/store/modules/memberStore";
 
 export default {
     name: "BoardList",
@@ -48,6 +49,8 @@ export default {
         }
     },
     created() {
+        console.log(memberStore.state.userinfo)
+        this.userId = memberStore.state.userinfo
         console.log("created 실행")
         axiosInstance.get('http://localhost/api/v1/board/list')
             .then((res) => {

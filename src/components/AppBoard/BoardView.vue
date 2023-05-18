@@ -22,7 +22,7 @@
         <b-col>
           <b-card
             :header-html="`<h3>${article.boardId}.
-                                                                                                                                                                                                                                                                                                                  ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
             class="mb-2" border-variant="dark" no-body>
             <!-- <b-card-body class="text-left">
             <div v-html="message"></div>
@@ -36,15 +36,20 @@
 
 <script>
 import axiosInstance from "@/api/axiosInstance";
-import { mapActions } from "vuex";
+// import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
+import memberStore from "@/store/modules/memberStore";
 
 export default {
+  ...mapGetters("memberStore", ['getUserinfo']),
   name: "BoardDetail",
   data() {
     return {
       article: {},
       userinfo: [],
     };
+  },
+  computed: {
   },
   created() {
     let param = this.$route.params.articleno;
@@ -62,20 +67,21 @@ export default {
         data.createdat = a + " " + b;
         this.article = data;
       })
-
-    this.$store.dispatch('memberStore/fetchUserinfo')
-      .then(() => {
-        // 사용자 정보를 가져왔을 때 필요한 작업 수행
-        this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-        console.log(this.userinfo);
-      })
-      .catch(error => {
-        // 오류 처리
-        console.error(error)
-      });
+    this.userinfo = memberStore.state.userinfo
+    console.log(this.userinfo)
+    // this.$store.dispatch('memberStore/fetchUserinfo')
+    //   .then(() => {
+    //     // 사용자 정보를 가져왔을 때 필요한 작업 수행
+    //     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+    //     console.log(this.userinfo);
+    //   })
+    //   .catch(error => {
+    //     // 오류 처리
+    //     console.error(error)
+    //   });
   },
   methods: {
-    ...mapActions("memberStore", ["decodeToken", "fetchUserinfo"]),
+    // ...mapActions("memberStore", ["decodeToken", "fetchUserinfo"]),
     moveModifyArticle() {
       console.log(this.article.boardId);
       this.$router.replace({
