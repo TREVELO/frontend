@@ -6,7 +6,7 @@
 
 
                     <div class="modal-header">
-                        <h3 slot="header">로그인</h3>
+                        <h3 slot="header">회원가입</h3>
                         <button class="modal-default-button" @click="$emit('close')">
                             X
                         </button>
@@ -16,12 +16,16 @@
                         <slot name="body">
                             <form @submit.prevent="login">
                                 <div class="form-group">
-                                    <input type="text" v-model="form.loginId" class="form-control" id="loginId"
-                                        placeholder="Your login id...">
+                                    <input type="text" v-model="user.name" class="form-control" id="loginId"
+                                        placeholder="Your Name...">
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" v-model="form.loginPassword" class="form-control" id="password"
-                                        placeholder="Your password...">
+                                    <input type="text" v-model="user.id" class="form-control" id="password"
+                                        placeholder="Your Id...">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" v-model="user.password" class="form-control" id="password"
+                                        placeholder="Your Password...">
                                 </div>
                                 <div>
                                     <button type="submit" class="btn btn-info btn-block btn-round">Login</button>
@@ -57,15 +61,16 @@
   
 <script>
 import axios from "axios";
+// import memberStore from "@/store/modules/memberStore";
 import { mapActions, mapGetters } from "vuex";
-//import MainHeaderVue from './Main-Header.vue';
 
 export default {
     data() {
         return {
-            form: {
-                loginId: '',
-                loginPassword: '',
+            user: {
+                name: '',
+                id: '',
+                password: '',
             },
             errors: [],
             errorshow: false,
@@ -114,19 +119,12 @@ export default {
                     console.log(this.$store.getters["memberStore/getToken"]);
                     console.log(sessionStorage.getItem("token"));
 
-                    alert("userinfo 생성");
-                    try {
-                        this.userinfo = this.$store.dispatch("memberStore/fetchUserinfo");
-                        alert("성공");
-                    } catch (err) {
-                        console.log(err);
-                        alert(err);
-                    }
+                    console.log("userinfo 생성");
 
+                    this.$store.dispatch("memberStore/fetchUserinfo");
                     console.log("유저 정보")
                     this.$emit('close');
-                    //window.location.reload(true)
-                    //{ MainHeaderVue.mainHeaderReload() }
+                    window.location.reload(true);
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];

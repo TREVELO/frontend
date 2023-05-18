@@ -37,17 +37,11 @@ const routes = [
         component: () => import("@/components/AppBoard/BoardModify")
       }
     ]
-  },
-  {
-    path: '',
-    name: "AppMypage",
-    component: () => import("@/views/AppMypage"),
+  }, {
+    path: "/map",
+    name: "map",
+    component: () => import("@/views/AppMap"),
     children: [
-      {
-        path: "View",
-        name: "MyPageView",
-        component: () => import("@/components/AppMypage/MypageView")
-      },
     ]
   }
 ]

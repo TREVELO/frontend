@@ -2,17 +2,20 @@
   <div id="Header"
     style="background-image: url('https://images.pexels.com/photos/60597/dahlia-red-blossom-bloom-60597.jpeg?auto=compress&cs=tinysrgb&w=1600');">
     <div id="topHeader">
-      <span>
+      <span v-if="this.getUserinfo != null">
         <button id="btn-header"><span style="font-family: 'Karla', sans-serif;">마이페이지</span></button>
-        <button id="btn-header"><span style="font-family: 'Karla', sans-serif;">로그아웃</span></button>
+        <button id="btn-header" @click="Logout"><span style="font-family: 'Karla', sans-serif;">로그아웃</span></button>
       </span>
-      <span>
-        <button id="btn-header"><span style="font-family: 'Karla', sans-serif;">회원가입</span></button>
+      <span v-if="this.getUserinfo === null">
+        <button id="btn-header" @click="showRegisterModal = true"><span
+            style="font-family: 'Karla', sans-serif;">회원가입</span></button>
         <button id="btn-header" @click="showModal = true"><span
             style="font-family: 'Karla', sans-serif;">로그인</span></button>
       </span>
       <LoginModal v-if="showModal" @close="showModal = false">
       </LoginModal>
+      <register-modal-vue v-if="showRegisterModal" @close="showRegisterModal = false">
+      </register-modal-vue>
     </div>
     <!-- <img src="../assets/Image Pasted at 2023-5-15 16-35.png" alt=""> -->
     <div id="searchBox">
@@ -28,20 +31,38 @@
 
 <script>
 import LoginModal from './LoginModal.vue';
+import { mapGetters, mapActions } from 'vuex';
+import RegisterModalVue from './RegisterModal.vue';
+// import memberStore from '@/store/modules/memberStore';
 
 export default {
+  name: 'Main_Header',
   data() {
     return {
-      showModal: false
+      showModal: false,
+      showRegisterModal: false,
+      // userinfo: [],
     }
   },
   components: {
     LoginModal,
+    RegisterModalVue,
   },
+  computed: {
+    ...mapGetters("memberStore", ["getUserinfo"]),
+    ...mapActions("memberStore", ["resetMemberState"]),
 
+  },
   methods: {
-
-  }
+    Logout() {
+      this.$store.dispatch('memberStore/resetMemberState');
+      sessionStorage.clear();
+      window.location.reload(true)
+    },
+    mainHeaderReload() {
+      window.location.reload(true)
+    }
+  },
 }
 </script>
 
