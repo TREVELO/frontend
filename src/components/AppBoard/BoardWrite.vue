@@ -13,10 +13,6 @@
         <b-row class="mb-1">
             <b-col style="text-align: left">
                 <b-form @submit="onSubmit">
-                    <b-form-group id="memberId-group" label="작성자:" label-for="memberId">
-                        <b-form-input id="memberId" v-model="article.memberId" type="text" required
-                            placeholder="article.userId" readonly></b-form-input>
-                    </b-form-group>
 
                     <b-form-group id="title-group" label="제목:" label-for="title">
                         <b-form-input id="title" v-model="article.title" type="text" required
@@ -25,7 +21,7 @@
 
                     <b-form-group id="content-group" label="내용:" label-for="content">
                         <b-form-textarea id="content" v-model="article.content" placeholder="내용 입력..." rows="10"
-                            max-rows="15"></b-form-textarea>
+                            max-rows="15" required></b-form-textarea>
                     </b-form-group>
 
                     <b-button type="submit" variant="primary" class="m-1">글작성</b-button>
@@ -38,32 +34,31 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 
 export default {
     name: "BoardWrite",
     data: function () {
         return {
             article: {
-                memberId: "2",
                 title: "",
-                content: ""
-            },
+                content: "",
+                boardTag: ""
+            }
         }
     },
     methods: {
         onSubmit(event) {
             event.preventDefault();
 
-            axios.post('http://localhost/api/v1/board/write', this.article)
+            axiosInstance.post('http://localhost/api/v1/board/write', this.article)
                 .then((res) => {
                     console.log(res.data)
                     this.moveList()
                 })
                 .catch((err) => {
                     console.log(err)
-                });
-
+                })
         },
         onReset() {
             this.article.title = "",

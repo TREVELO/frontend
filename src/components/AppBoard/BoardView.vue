@@ -14,15 +14,17 @@
           <b-button variant="outline-primary" @click="moveList">목록</b-button>
         </b-col>
         <b-col class="text-right">
-          <b-button variant="outline-info" size="sm" @click="moveModifyArticle" class="mr-2">글수정</b-button>
-          <b-button variant="outline-danger" size="sm" @click="deleteArticle">글삭제</b-button>
+          <b-button variant="outline-info" size="sm" @click="moveModifyArticle" class="mr-2"
+            v-if="userId === article.boardId">글수정</b-button>
+          <b-button variant=" outline-danger" size="sm" @click="deleteArticle"
+            v-if="userId === article.boardId">글삭제</b-button>
         </b-col>
       </b-row>
       <b-row class="mb-1">
         <b-col>
           <b-card
             :header-html="`<h3>${article.boardId}.
-                                      ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
+                                                                                  ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
             class="mb-2" border-variant="dark" no-body>
             <!-- <b-card-body class="text-left">
             <div v-html="message"></div>
@@ -35,19 +37,21 @@
 </template>
 
 <script>
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
+import { mapActions } from "vuex";
 
 export default {
   name: "BoardDetail",
   data() {
     return {
       article: {},
+      userId: "",
     };
   },
   created() {
     let param = this.$route.params.articleno;
     console.log(param)
-    axios.get('http://localhost/api/v1/board/view/' + param)
+    axiosInstance.get('http://localhost/api/v1/board/view/' + param)
       .then(({ data }) => {
         console.log(data)
         if (data.updatedat !== null) {
@@ -60,13 +64,21 @@ export default {
         data.createdat = a + " " + b;
         this.article = data;
       })
+    this.$store.dispatch('memberStore/decodeToken')
+      .then(decodedToken => {
+        this.userId = decodedToken.loginId;
+        console.log(this.userId);
+      }).catch(error => {
+        console.log(error);
+      })
   },
   methods: {
+    ...mapActions("memberStore", ["decodeToken"]),
     moveModifyArticle() {
       console.log(this.article.boardId);
       this.$router.replace({
         name: "BoardModify",
-        params: { articleno : this.article.boardId },
+        params: { articleno: this.article.boardId },
       });
       //   this.$router.push({ path: `/board/modify/${this.article.articleno}` });
     },
@@ -74,7 +86,7 @@ export default {
       if (confirm("정말로 삭제?")) {
         console.log('글 삭제')
         let param = this.$route.params.articleno;
-        axios.delete('http://localhost/api/v1/board/delete/' + param)
+        axiosInstance.delete('http://localhost/api/v1/board/delete/' + param)
           .then(() => {
             console.log('글삭제 완료')
             this.moveList()

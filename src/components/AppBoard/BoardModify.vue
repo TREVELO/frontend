@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 
 export default {
     name: 'BoardModify',
@@ -45,13 +45,13 @@ export default {
     data() {
         return {
             article: [],
-            originalArticle : []
+            originalArticle: []
         };
     },
     created() {
         let param = this.$route.params.articleno;
         console.log(param)
-        axios.get('http://localhost/api/v1/board/view/' + param)
+        axiosInstance.get('http://localhost/api/v1/board/view/' + param)
             .then(({ data }) => {
                 // console.log(data)
                 if (data.updatedat !== null) {
@@ -61,31 +61,31 @@ export default {
                 let b = data.createdat.substring(11, data.createdat.length);
                 // console.log(a);
                 // console.log(b);
-                data.createdat = a + " " + b;
-                this.article = data;
-                this.originalArticle = data;
-                // console.log(this.article);
+                this.originalArticle.createdat = a + " " + b;
+                this.article = { ...data };
+                this.originalArticle = { ...data };
+                console.log(this.article);
                 // console.log(this.originalArticle);
             })
-     },
+    },
     methods: {
-        onSubmit(article) {
+        onSubmit() {
             console.log(this.article)
-            axios.put('http://localhost/api/v1/board/modify', { BoardDto: article })
+            axiosInstance.put('http://localhost/api/v1/board/modify', this.article)
                 .then(() => {
                     console.log("글 수정 완료")
                     this.moveList()
                 })
                 .catch((err) => {
-                console.log(err)
-            })
+                    console.log(err)
+                })
         },
         onReset() {
             console.log(this.originalArticle.title);
-            this.article.title = "";
-            this.article.content = "";
-            // this.article.title = this.originalArticle.title;
-            // this.article.content = this.originalArticle.content;
+            // this.article.title = "";
+            // this.article.content = "";
+            this.article.title = this.originalArticle.title;
+            this.article.content = this.originalArticle.content;
         },
         moveList() {
             this.$router.push({ name: "BoardList" });

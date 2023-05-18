@@ -11,12 +11,12 @@
             </b-row>
             <b-row class="mb-1">
                 <b-col class="text-right">
-                    <b-button variant="outline-primary" @click="moveWrite()">글쓰기</b-button>
+                    <b-button variant="outline-primary" @click="moveWrite()" v-if="userId">글쓰기</b-button>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col>
-                    <b-table striped hover :items="articles" :fields="fields"  @row-clicked="viewArticle" >
+                    <b-table striped hover :items="articles" :fields="fields" @row-clicked="viewArticle">
                         <template #cell(subject)="data">
                             <router-link :to="{ name: 'BoardList', params: { articleno: data.item.boardId } }">
                                 {{ data.item.title }}
@@ -30,7 +30,7 @@
 </template>
 <!-- @row-clicked="viewArticle" -->
 <script>
-import axios from "axios";
+import axiosInstance from "@/api/axiosInstance";
 
 export default {
     name: "BoardList",
@@ -39,16 +39,17 @@ export default {
             articles: [],
             fields: [
                 { key: "boardId", label: "글번호" },
-                { key: "memberId", label: "멤버번호" },
+                { key: "memberId", label: "글쓴이" },
                 { key: "title", label: "제목" },
                 { key: "hit", label: "조회수" },
                 { key: "createdat", label: "작성날짜" }
-            ]
+            ],
+            userId: "",
         }
     },
     created() {
         console.log("created 실행")
-        axios.get('http://localhost/api/v1/board/list')
+        axiosInstance.get('http://localhost/api/v1/board/list')
             .then((res) => {
                 console.log("리스트")
                 this.articles = res.data
@@ -66,6 +67,14 @@ export default {
             })
             .catch((err) =>
                 console.log(err));
+
+        this.$store.dispatch('memberStore/decodeToken')
+            .then(decodedToken => {
+                this.userId = decodedToken.loginId;
+                console.log(this.userId);
+            }).catch(error => {
+                console.log(error);
+            })
     },
     methods: {
         moveWrite() {

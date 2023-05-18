@@ -1,3 +1,5 @@
+import jwtDecode from "jwt-decode";
+
 const memberStore = {
     namespaced: true,
     state: {
@@ -11,6 +13,13 @@ const memberStore = {
     actions: {
         setToken({ commit }, token) {
             commit("SET_TOKEN", token); // SET_TOKEN 뮤테이션을 호출하여 토큰 설정
+        },
+        decodeToken({ state }) {
+            if (state.token) {
+                const decodedToken = jwtDecode(state.token); // 토큰 디코드
+                return decodedToken;
+            }
+            return null;
         },
     },
     getters: {
