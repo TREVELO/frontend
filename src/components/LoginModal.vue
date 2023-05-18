@@ -118,10 +118,6 @@ export default {
 
                     this.$store.dispatch("memberStore/fetchUserinfo");
                     console.log("유저 정보")
-                    console.log(this.$store.getters["memberStore/getUserinfo"]);
-                    console.log(sessionStorage.getItem("userinfo"))
-                    sessionStorage.setItem("userinfo", this.$store.getters["memberStore/getUserinfo"])
-                    console.log(sessionStorage.getItem("userinfo"))
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];

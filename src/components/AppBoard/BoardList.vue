@@ -11,14 +11,27 @@
             </b-row>
             <b-row class="mb-1">
                 <b-col class="text-right">
-                    <b-button variant="outline-primary" @click="moveWrite()" v-if="userId">글쓰기</b-button>
+                    <b-button variant="outline-primary" @click="moveWrite()" v-if="userId"
+                        >글쓰기</b-button
+                    >
                 </b-col>
             </b-row>
             <b-row>
                 <b-col>
-                    <b-table striped hover :items="articles" :fields="fields" @row-clicked="viewArticle">
+                    <b-table
+                        striped
+                        hover
+                        :items="articles"
+                        :fields="fields"
+                        @row-clicked="viewArticle"
+                    >
                         <template #cell(subject)="data">
-                            <router-link :to="{ name: 'BoardList', params: { articleno: data.item.boardId } }">
+                            <router-link
+                                :to="{
+                                    name: 'BoardList',
+                                    params: { articleno: data.item.boardId },
+                                }"
+                            >
                                 {{ data.item.title }}
                             </router-link>
                         </template>
@@ -32,6 +45,7 @@
 <script>
 import axiosInstance from "@/api/axiosInstance";
 import memberStore from "@/store/modules/memberStore";
+import { mapGetters } from "vuex";
 
 export default {
     name: "BoardList",
@@ -43,35 +57,41 @@ export default {
                 { key: "memberId", label: "글쓴이" },
                 { key: "title", label: "제목" },
                 { key: "hit", label: "조회수" },
-                { key: "createdat", label: "작성날짜" }
+                { key: "createdat", label: "작성날짜" },
             ],
             userinfo: [],
-        }
+        };
+    },
+    computed: {
+        ...mapGetters("memberStore", ["getUserinfo"]),
     },
     created() {
-        this.userinfo = sessionStorage.getItem("userinfo");
-        console.log("userinfo")
+        this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+        console.log(this.userinfo);
         console.log(this.userinfo.name);
-        this.userId = memberStore.state.userinfo
-        console.log("created 실행")
-        axiosInstance.get('http://localhost/api/v1/board/list')
+        this.userId = memberStore.state.userinfo;
+        console.log("created 실행");
+        axiosInstance
+            .get("http://localhost/api/v1/board/list")
             .then((res) => {
-                console.log("리스트")
-                this.articles = res.data
+                console.log("리스트");
+                this.articles = res.data;
                 for (let index = 0; index < this.articles.length; index++) {
                     // console.log(this.articles[index].createdat.substring(0, 10))
                     if (this.articles[index].updatedat !== null) {
                         this.articles[index].createdat = this.articles[index].updatedat;
                     }
                     let a = this.articles[index].createdat.substring(0, 10);
-                    let b = this.articles[index].createdat.substring(11, this.articles[index].length);
+                    let b = this.articles[index].createdat.substring(
+                        11,
+                        this.articles[index].length
+                    );
                     // console.log(a);
                     // console.log(b);
                     this.articles[index].createdat = a + " " + b;
                 }
             })
-            .catch((err) =>
-                console.log(err));
+            .catch((err) => console.log(err));
 
         // this.$store.dispatch('memberStore/decodeToken')
         //     .then(decodedToken => {
@@ -80,11 +100,10 @@ export default {
         //     }).catch(error => {
         //         console.log(error);
         //     })
-
     },
     methods: {
         moveWrite() {
-            this.$router.push({ path: "write" })
+            this.$router.push({ path: "write" });
         },
         viewArticle(article) {
             this.$router.push({
@@ -92,8 +111,8 @@ export default {
                 params: { articleno: article.boardId },
             });
         },
-    }
-}
+    },
+};
 </script>
 
 <style></style>
