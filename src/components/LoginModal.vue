@@ -57,7 +57,7 @@
   
 <script>
 import axios from "axios";
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
     data() {
@@ -70,8 +70,12 @@ export default {
             errorshow: false,
         }
     },
+    computed: {
+        ...mapGetters("memberStore", ["getUserinfo"]),
+    },
+
     methods: {
-         ...mapActions("memberStore", ["setToken", "getToken"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
+         ...mapActions("memberStore", ["setToken", "getToken", "fetchUserinfo"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
 
         validationCheck() {
             this.errors = [];
@@ -85,42 +89,48 @@ export default {
                 this.errorshow = true;
             }
         },
-async login() {
-  console.log("login request");
-  console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
-  this.validationCheck();
-  console.log(this.errors);
-  if (this.errors.length === 0) {
-    console.log(this.form);
+        async login() {
+        console.log("login request");
+        console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
+        this.validationCheck();
+        console.log(this.errors);
+        if (this.errors.length === 0) {
+        console.log(this.form);
 
-    try {
-      const response = await axios.post('http://localhost/api/v1/member/login', this.form);
-      console.log(response.data);
+        try {
+            const response = await axios.post('http://localhost/api/v1/member/login', this.form);
+            console.log(response.data);
 
-      const token = response.data; // 응답에서 토큰 추출
+            const token = response.data; // 응답에서 토큰 추출
 
-      // 토큰을 세션 스토리지에 저장
-      sessionStorage.setItem("token", token);
+            // 토큰을 세션 스토리지에 저장
+            sessionStorage.setItem("token", token);
 
-      // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
-      this.$store.dispatch("memberStore/setToken", token);
-      console.log(token);
-      console.log("token is");
-      console.log(this.$store.getters["memberStore/getToken"]);
-      console.log(sessionStorage.getItem("token"));
-    } catch (error) {
-      console.log(error.response.data);
-      this.errors = [];
-      this.errors.push(error.response.data);
-      if (!this.errorshow) {
-        this.errorshow = true;
-      }
-    }
-  }
-}
-  }
-}
-</script>
+            // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
+            this.$store.dispatch("memberStore/setToken", token);
+            console.log(token);
+            console.log("token is");
+            console.log(this.$store.getters["memberStore/getToken"]);
+            console.log(sessionStorage.getItem("token"));
+
+            console.log("userinfo 생성");
+            
+            this.$store.dispatch("memberStore/fetchUserinfo");
+            console.log(this.$store.getters["memberStore/getUserinfo"]);
+
+        } catch (error) {
+            console.log(error.response.data);
+            this.errors = [];
+            this.errors.push(error.response.data);
+            if (!this.errorshow) {
+            this.errorshow = true;
+            }
+        }
+        }
+        }
+        }
+        }
+        </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap');
