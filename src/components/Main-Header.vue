@@ -3,7 +3,7 @@
     style="background-image: url('https://images.pexels.com/photos/60597/dahlia-red-blossom-bloom-60597.jpeg?auto=compress&cs=tinysrgb&w=1600');">
     <div id="topHeader">
       <span v-if="this.getUserinfo != null">
-        <button id="btn-header"><span style="font-family: 'Karla', sans-serif;">마이페이지</span></button>
+        <button id="btn-header" @click="goMypage"><span style="font-family: 'Karla', sans-serif;">마이페이지</span></button>
         <button id="btn-header" @click="Logout"><span style="font-family: 'Karla', sans-serif;">로그아웃</span></button>
       </span>
       <span v-if="this.getUserinfo === null">
@@ -58,12 +58,16 @@ export default {
       if (confirm('로그아웃하시겠습니까??')) {
         this.$store.dispatch('memberStore/resetMemberState');
         sessionStorage.clear();
-        window.location.reload(true)
+        this.$router.push({ path: "/" })
       }
     },
     mainHeaderReload() {
       window.location.reload(true)
+    },
+    goMypage() {
+      this.$router.push({ path: '/mypage' })
     }
+
   },
 }
 </script>

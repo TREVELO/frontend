@@ -1,5 +1,6 @@
 <template>
     <div>
+        <b>kakao Map화면</b>
         <div id="map" style="margin: 0 auto;"></div>
         <div class="button-group">
             <button @click="displayMarker(markerPositions1)">marker set 1</button>

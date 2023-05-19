@@ -41,6 +41,19 @@ const routes = [
     path: "/map",
     name: "map",
     component: () => import("@/views/AppMap"),
+  },
+  {
+    path: "/mypage",
+    name: "mypage",
+    component: () => import("@/views/AppMypage"),
+    redirect: "/mypage/view",
+    children: [
+      {
+        path: "View",
+        name: "MypageView",
+        component: () => import("@/components/AppMypage/MypageView")
+      }
+    ]
   }
 ]
 
