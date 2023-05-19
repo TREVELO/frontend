@@ -19,13 +19,20 @@
     </div>
     <!-- <img src="../assets/Image Pasted at 2023-5-15 16-35.png" alt=""> -->
     <div id="searchBox">
-      <label>
+      <label style="display: inline-block; margin-left: 10px;">
+        <select v-model="searchbox.subject">
+          <option v-for="(item, index) in searchbox.subjectList" :key="index" :value="item.value">
+            {{ item.name }}
+          </option>
+        </select>
         <input type="text" id="searchWord" placeholder="검색어를 입력해주세요." required
-          style="font-family: 'Open Sans', sans-serif; padding-left: 1.5em;">
-        <button type="submit" id="btn-search"><font-awesome-icon :icon="['fas', 'magnifying-glass']"
-            style="height: 30px; vertical-align: middle;" /></button>
+          style="font-family: 'Open Sans', sans-serif; padding-left: 8em;">
+        <button type="submit" id="btn-search">
+          <font-awesome-icon :icon="['fas', 'magnifying-glass']" style="height: 30px; vertical-align: middle;" />
+        </button>
       </label>
     </div>
+
   </div>
 </template>
 
@@ -42,6 +49,36 @@ export default {
       showModal: false,
       showRegisterModal: false,
       // userinfo: [],
+      searchbox: {
+        subject: "1",
+        subjectList: [
+          {
+            name: "유형 선택", value: "1"
+          },
+          {
+            name: "관광지", value: "2"
+          },
+          {
+            name: "문화시설", value: "3"
+          },
+          {
+            name: "축제공연행사", value: "4"
+          },
+          {
+            name: "여행코스", value: "5"
+          },
+          {
+            name: "레포츠", value: "6"
+          },
+          {
+            name: "쇼핑", value: "7"
+          },
+          {
+            name: "음식점", value: "8"
+          }
+        ],
+
+      },
     }
   },
   components: {
@@ -58,7 +95,7 @@ export default {
       if (confirm('로그아웃하시겠습니까??')) {
         this.$store.dispatch('memberStore/resetMemberState');
         sessionStorage.clear();
-        this.$router.push({ path: "/" })
+        window.location.reload(true)
       }
     },
     mainHeaderReload() {
@@ -93,12 +130,12 @@ span:hover {
   height: 100px;
 }
 
-a {
+/* a {
   float: right;
   margin-right: 75px;
   text-decoration: none;
   padding-top: 30px;
-}
+} */
 
 label {
   margin-top: 30px;
@@ -140,6 +177,10 @@ label {
 ::placeholder {
   color: black;
   font-family: 'Open Sans', sans-serif;
+}
+
+.dropdown {
+  position: absolute;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap');

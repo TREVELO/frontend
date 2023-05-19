@@ -122,7 +122,7 @@ export default {
 
                     console.log("유저 정보")
                     this.$emit('close');
-                    
+                    //{ MainHeaderVue.mainHeaderReload() }
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];

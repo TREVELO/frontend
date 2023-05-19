@@ -11,27 +11,29 @@
             <tbody class="table-group-divider">
                 <tr>
                     <td>이름</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.name" readonly></td>
+                    <td><input type="text" name="" id="" v-model="userinfo.name" style="text-align: center;" readonly></td>
                 </tr>
                 <tr>
                     <td>아이디</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.loginId" readonly></td>
+                    <td><input type="text" name="" id="" v-model="userinfo.loginId" style="text-align: center;" readonly>
+                    </td>
                 </tr>
                 <tr>
                     <td>비밀번호</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.password"></td>
+                    <td><input type="text" name="" id="" v-model="userinfo.password" style="text-align: center;"></td>
                 </tr>
                 <tr>
                     <td>이메일</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.email"></td>
+                    <td><input type="text" name="" id="" v-model="userinfo.email" style="text-align: center;"></td>
                 </tr>
                 <tr>
                     <td>회원등급</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.grade" readonly></td>
+                    <td><input type="text" name="" id="" v-model="userinfo.grade" style="text-align: center;" readonly></td>
                 </tr>
                 <tr>
                     <td>마일리지</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.mileage" readonly></td>
+                    <td><input type="text" name="" id="" v-model="userinfo.mileage" style="text-align: center;" readonly>
+                    </td>
                 </tr>
             </tbody>
         </table>
