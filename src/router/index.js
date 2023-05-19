@@ -52,6 +52,11 @@ const routes = [
         path: "View",
         name: "MypageView",
         component: () => import("@/components/AppMypage/MypageView")
+      },
+      {
+        path: "Modify",
+        name: "MypageModify",
+        component: () => import("@/components/AppMypage/MypageModify")
       }
     ]
   }

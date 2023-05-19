@@ -11,45 +11,40 @@
             <tbody class="table-group-divider">
                 <tr>
                     <td>이름</td>
-                    <td>{{ userinfo.name }}</td>
+                    <td><input type="text" name="" id="" v-model="userinfo.name" readonly></td>
                 </tr>
                 <tr>
                     <td>아이디</td>
-                    <td>{{ userinfo.loginId }}</td>
+                    <td><input type="text" name="" id="" v-model="userinfo.loginId" readonly></td>
                 </tr>
-                <!-- <tr>
+                <tr>
                     <td>비밀번호</td>
-                    <td>{{ userinfo. }}</td>
-                </tr> -->
+                    <td><input type="text" name="" id="" v-model="userinfo.password"></td>
+                </tr>
                 <tr>
                     <td>이메일</td>
-                    <td>{{ userinfo.email }}</td>
+                    <td><input type="text" name="" id="" v-model="userinfo.email"></td>
                 </tr>
                 <tr>
                     <td>회원등급</td>
-                    <td>{{ userinfo.grade }}</td>
+                    <td><input type="text" name="" id="" v-model="userinfo.grade" readonly></td>
                 </tr>
                 <tr>
                     <td>마일리지</td>
-                    <td>{{ userinfo.mileage }} 원 </td>
+                    <td><input type="text" name="" id="" v-model="userinfo.mileage" readonly></td>
                 </tr>
             </tbody>
         </table>
 
         <div>
-            <button class="btn btn-outline-secondary">마일리지 충전</button>
-            <button class="btn btn-outline-secondary"><router-link to="modify"
-                    style="text-decoration: none; color: black;">회원정보
-                    수정</router-link></button>
-            <button class="btn btn-outline-secondary">관심 관광지</button>
-            <button class="btn btn-outline-secondary">예약내역</button>
+            <button class="btn btn-outline-secondary" @click="memberModify">회원정보 수정</button>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "MypageView",
+    name: "MypageModify",
     data() {
         return {
             userinfo: [],
@@ -58,6 +53,15 @@ export default {
     created() {
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
         console.log(this.userinfo)
+    },
+    methods: {
+        memberModify(userinfo) {
+            if (confirm("회원 정보를 변경하시겠습니까??")) {
+                console.log(userinfo)
+
+                this.$router.push({ path: '/mypage' })
+            }
+        },
     }
 }
 </script>
@@ -76,5 +80,9 @@ button {
     margin-top: 30px;
     margin-left: 2%;
     margin-right: 2%;
+}
+
+input {
+    border-radius: 5px;
 }
 </style>
