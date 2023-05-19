@@ -26,7 +26,7 @@
           </option>
         </select>
         <input type="text" id="searchWord" placeholder="검색어를 입력해주세요." required
-          style="font-family: 'Open Sans', sans-serif; padding-left: 8em;">
+          style="font-family: 'Open Sans', sans-serif; padding-left: 9.5em;" v-model="searchbox.sentence">
         <button type="submit" id="btn-search">
           <font-awesome-icon :icon="['fas', 'magnifying-glass']" style="height: 30px; vertical-align: middle;" />
         </button>
@@ -50,34 +50,37 @@ export default {
       showRegisterModal: false,
       // userinfo: [],
       searchbox: {
-        subject: "1",
+        subject: "-1",
         subjectList: [
           {
-            name: "유형 선택", value: "1"
+            name: "유형 선택", value: "-1"
           },
           {
-            name: "관광지", value: "2"
+            name: "관광지", value: "12"
           },
           {
-            name: "문화시설", value: "3"
+            name: "문화시설", value: "14"
           },
           {
-            name: "축제공연행사", value: "4"
+            name: "축제공연행사", value: "15"
           },
           {
-            name: "여행코스", value: "5"
+            name: "여행코스", value: "25"
           },
           {
-            name: "레포츠", value: "6"
+            name: "레포츠", value: "28"
           },
           {
-            name: "쇼핑", value: "7"
+            name: "숙박", value: "32"
           },
           {
-            name: "음식점", value: "8"
+            name: "쇼핑", value: "38"
+          },
+          {
+            name: "음식점", value: "39"
           }
         ],
-
+        sentence: ""
       },
     }
   },
@@ -179,8 +182,16 @@ label {
   font-family: 'Open Sans', sans-serif;
 }
 
-.dropdown {
+select {
+  height: 50px;
+  margin-left: 20px;
   position: absolute;
+  border: none;
+  vertical-align: middle;
+  margin-top: 3px;
+  color: red;
+  font-size: large;
+  font-weight: bold;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap');

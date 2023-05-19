@@ -6,6 +6,7 @@
             <button @click="displayMarker(markerPositions)">marker set 1</button>
             <button @click="displayMarker([])">Erase Marker</button>
             <button>Go Search</button>
+            <button>My Favorite</button>
         </div>
     </div>
 </template>
