@@ -105,7 +105,7 @@ export default {
       window.location.reload(true)
     },
     goMypage() {
-      this.$router.push({ path: '/mypage' })
+      this.$router.push({ name: 'mypage' })
     },
     goSearch(searchbox) {
       console.log("goSearch 실행")
@@ -115,9 +115,9 @@ export default {
       } else if (searchbox.sentence == "") {
         alert("검색어를 입력해주세요!!")
       } else {
-        console.log("메인헤더에서 지도 창으로")
-        this.$router.push({ path: '/map/Map', params: { subject: searchbox.subject, sentence: searchbox.sentence } });
+        this.$router.push({ name: 'MapMap', params: { subject: searchbox.subject, sentence: searchbox.sentence } });
       }
+      
     }
 
   },

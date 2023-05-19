@@ -4,7 +4,7 @@
         <div id="map" style="margin: 0 auto;"></div>
         <div class="button-group">
             <button @click="displayMarker(markerPositions)">marker set 1</button>
-            <button @click="displayMarker([])">Erase Marker</button>
+            <!-- <button @click="displayMarker([])">Erase Marker</button> -->
             <button>Go Search</button>
             <button>My Favorite</button>
         </div>
@@ -42,28 +42,32 @@ export default {
         console.log(subject);
         console.log(sentence);
 
-        axiosInstance.post(`http://localhost/api/v1/attraction/search?title=${sentence}&sidoCode=&gugunCode=&contentType=${subject}`)
-            .then((res) => {
-                console.log(res.data.length)
-                for (let index = 0; index < res.data.length; index++) {
-                    this.attractions.push(res.data[index])
-                }
+        if (subject != undefined && sentence != undefined) {
+            axiosInstance.post(`http://localhost/api/v1/attraction/search?title=${sentence}&sidoCode=&gugunCode=&contentType=${subject}`)
+                .then((res) => {
+                    console.log(res.data.length)
+                    for (let index = 0; index < res.data.length; index++) {
+                        this.attractions.push(res.data[index])
+                    }
 
-                for (let index = 0; index < this.attractions.length; index++) {
-                    this.markerPositions.push([this.attractions[index].latitude, this.attractions[index].longitude])
-                }
+                    for (let index = 0; index < this.attractions.length; index++) {
+                        this.markerPositions.push([this.attractions[index].latitude, this.attractions[index].longitude])
+                    }
 
-                console.log("markerPositions 갯수")
-                console.log(this.markerPositions)
-                if (this.markerPositions.length > 0) {
-                    this.displayMarker(this.markerPositions);
-                }
-                // this.markerPositions.push([this.attractions[0].latitude, this.attractions[0].longitude])
-                // console.log(this.markerPositions.length)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+                    console.log("markerPositions 갯수")
+                    console.log(this.markerPositions)
+                    if (this.markerPositions.length > 0) {
+                        this.displayMarker(this.markerPositions);
+                    }
+
+                    console.log(this.markerPositions)
+                    // this.markerPositions.push([this.attractions[0].latitude, this.attractions[0].longitude])
+                    // console.log(this.markerPositions.length)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
 
 
     },
