@@ -21,13 +21,13 @@
     <div id="searchBox">
       <label style="display: inline-block; margin-left: 10px;">
         <select v-model="searchbox.subject">
-          <option v-for="(item, index) in searchbox.subjectList" :key="index" :value="item.value">
+          <option v-for="(item, index) in this.searchbox.subjectList" :key="index" :value="item.value">
             {{ item.name }}
           </option>
         </select>
         <input type="text" id="searchWord" placeholder="검색어를 입력해주세요." required
           style="font-family: 'Open Sans', sans-serif; padding-left: 9.5em;" v-model="searchbox.sentence">
-        <button type="submit" id="btn-search">
+        <button type="submit" id="btn-search" @click="goSearch(searchbox)">
           <font-awesome-icon :icon="['fas', 'magnifying-glass']" style="height: 30px; vertical-align: middle;" />
         </button>
       </label>
@@ -106,6 +106,18 @@ export default {
     },
     goMypage() {
       this.$router.push({ path: '/mypage' })
+    },
+    goSearch(searchbox) {
+      console.log("goSearch 실행")
+      console.log(searchbox)
+      if (searchbox.subject == -1) {
+        alert("유형을 선택해주세요!!")
+      } else if (searchbox.sentence == "") {
+        alert("검색어를 입력해주세요!!")
+      } else {
+        console.log("메인헤더에서 지도 창으로")
+        this.$router.push({ path: '/map/Map', params: { subject: searchbox.subject, sentence: searchbox.sentence } });
+      }
     }
 
   },

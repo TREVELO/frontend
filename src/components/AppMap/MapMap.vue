@@ -15,7 +15,7 @@
 import axiosInstance from '@/api/axiosInstance';
 
 export default {
-    name: "KakaoMap",
+    name: "MapMap",
     data() {
         return {
             markerPositions: [],
@@ -34,15 +34,17 @@ export default {
             script.src =
                 "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=68a4947f8091662e797250d4aa2d4a54";
             document.head.appendChild(script);
-
-
         }
 
+        let subject = this.$route.params.subject;
+        let sentence = this.$route.params.sentence;
 
+        console.log(subject);
+        console.log(sentence);
 
-        axiosInstance.post("http://localhost/api/v1/attraction/search?title=&sidoCode=3&gugunCode=2&contentType=14")
+        axiosInstance.post(`http://localhost/api/v1/attraction/search?title=${sentence}&sidoCode=&gugunCode=&contentType=${subject}`)
             .then((res) => {
-                // console.log(res.data.length)
+                console.log(res.data.length)
                 for (let index = 0; index < res.data.length; index++) {
                     this.attractions.push(res.data[index])
                 }
