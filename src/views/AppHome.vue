@@ -6,9 +6,12 @@
     </div>
     <b>Home창</b>
     <div>
-      <button class="btn btn-outline-secondary" @click="getCurrentPosition()">
+      <button class="btn btn-outline-secondary" v-if="isPositionAccesable === false" @click="getCurrentPosition()">
         현재 위치 기반 추천 장소 찾기
       </button>
+      <div v-else>
+        GPS 동의 상태
+      </div>
     </div>
   </div>
 </template>

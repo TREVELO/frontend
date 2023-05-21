@@ -45,13 +45,13 @@ export default {
         if (subject != undefined && sentence != undefined) {
             axiosInstance.post(`http://localhost/api/v1/attraction/search?title=${sentence}&sidoCode=&gugunCode=&contentType=${subject}`)
                 .then((res) => {
-                    console.log(res.data.length)
+                    console.log(res.data)
                     for (let index = 0; index < res.data.length; index++) {
                         this.attractions.push(res.data[index])
                     }
 
                     for (let index = 0; index < this.attractions.length; index++) {
-                        this.markerPositions.push([this.attractions[index].latitude, this.attractions[index].longitude])
+                        this.markerPositions.push([this.attractions[index].latitude, this.attractions[index].longitude, this.attractions[index].contentId])
                     }
 
                     console.log("markerPositions 갯수")
@@ -59,8 +59,6 @@ export default {
                     if (this.markerPositions.length > 0) {
                         this.displayMarker(this.markerPositions);
                     }
-
-                    console.log(this.markerPositions)
                     // this.markerPositions.push([this.attractions[0].latitude, this.attractions[0].longitude])
                     // console.log(this.markerPositions.length)
                 })
@@ -85,15 +83,19 @@ export default {
         },
         displayMarker(markerPositions) {
             // console.log(this.attractions)
-            // console.log(this.markerPositions)
+            console.log("처음 markerpositions")
+            console.log(this.markerPositions)
             if (this.markers.length > 0) {
                 this.markers.forEach((marker) => marker.setMap(null));
             }
 
-            console.log(kakao);
+            // console.log(kakao);
             const positions = markerPositions.map(
                 (position) => new kakao.maps.LatLng(...position)
             );
+
+            // console.log("positions")
+            // console.log(positions)
 
             if (positions.length > 0) {
                 this.markers = positions.map(
@@ -104,6 +106,17 @@ export default {
                         })
                 );
 
+                this.markers.customData = {
+                    contentId : "contenteId 정보 저장"
+                }
+
+                this.markers.forEach((marker, index) => {
+                    kakao.maps.event.addListener(marker, "click", () => {
+                        console.log(index)
+                        this.markerClicked(index);
+                    })
+                })
+
                 const bounds = positions.reduce(
                     (bounds, latlng) => bounds.extend(latlng),
                     new kakao.maps.LatLngBounds()
@@ -112,28 +125,22 @@ export default {
                 this.map.setBounds(bounds);
             }
         },
-        displayInfoWindow() {
-            if (this.infowindow.getMap()) {
-                //이미 생성한 인포윈도우가 있기 때문에 지도 중심좌표를 인포윈도우 좌표로 이동시킨다.
-                this.map.setCenter(this.infowindow.getPosition());
-                return;
-            }
+        markerClicked(index) {
+            console.log("==========markerClicked")
+            const contentId = this.markerPositions[index][2]
 
-            var iwContent = '<div style="padding:5px;">Hello World!</div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-                iwPosition = new kakao.maps.LatLng(33.450701, 126.570667), //인포윈도우 표시 위치입니다
-                iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+            axiosInstance.post(`http://localhost/api/v1/attraction/favorite/view/${contentId}`)
+                .then((res) => {
+                    const attractionInfo = res.data;
+                    console.log(attractionInfo)
+                })
+                .catch((err) => {
+                console.log(err)
+            })
+            // const clickedMarker = this.markers[index];
+            // const contentId = clickedMarker.customData.contentId;
 
-            this.infowindow = new kakao.maps.InfoWindow({
-                map: this.map, // 인포윈도우가 표시될 지도
-                position: iwPosition,
-                content: iwContent,
-                removable: iwRemoveable,
-            });
-
-            this.map.setCenter(iwPosition);
-        },
-        viewAttraction() {
-
+            // console.log('마커 클릭 - contentId:', contentId);
         }
     },
     created() {
