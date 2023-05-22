@@ -2,14 +2,21 @@
     <div class="container">
         <div class="row row-cols-1 row-cols-md-4">
             <div class="col mb-4" v-for="room in roomList" :key="room.id">
-                <div class="card">
-                    <img :src="room.picture" class="card-img-top" alt="Room Picture" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ room.roomName }}</h5>
-                        <p class="card-text">가격: {{ room.pricePerNight }}</p>
-                        <p class="card-text">주소: {{ room.address }}</p>
+                <router-link
+                    :to="{
+                        name: 'roomView',
+                        params: { roomId: room.id },
+                    }"
+                >
+                    <div class="card">
+                        <img :src="room.picture" class="card-img-top" alt="Room Picture" />
+                        <div class="card-body">
+                            <h5 class="card-title">{{ room.roomName }}</h5>
+                            <p class="card-text">가격: {{ room.pricePerNight }}</p>
+                            <p class="card-text">주소: {{ room.address }}</p>
+                        </div>
                     </div>
-                </div>
+                </router-link>
             </div>
         </div>
     </div>

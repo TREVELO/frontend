@@ -80,6 +80,11 @@ const routes = [
                 name: "roomList",
                 component: () => import("@/components/AppRoom/RoomList"),
             },
+            {
+                path: "View",
+                name: "roomView",
+                component: () => import("@/components/AppRoom/RoomView"),
+            },
         ],
     },
 ];
