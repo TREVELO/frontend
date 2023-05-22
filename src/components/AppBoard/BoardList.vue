@@ -50,7 +50,6 @@ export default {
         };
     },
     created() {
-        console.log("created 실행");
         axiosInstance
             .get("http://localhost/api/v1/board/list")
             .then((res) => {

@@ -21,8 +21,13 @@
                             <div>
                                 <b>위치 : {{ attraction.addr }}</b>
                             </div>
-                            <button class="btn-success btn" style="margin-top: 15px" @click="registerAttraction">
-                                관심 관광지로 등록하기
+                            <button v-if="isLiked == false" class="btn-success btn" style="margin-top: 15px"
+                                @click="registerAttraction">
+                                관심 관광지 등록하기
+                            </button>
+                            <button v-else-if="isLiked == true" class="btn-danger btn" style="margin-top: 15px"
+                                @click="cancelRegisterAttraction">
+                                관심 관광지 취소하기
                             </button>
                         </slot>
                     </div>
@@ -44,6 +49,8 @@ export default {
     data() {
         return {
             userinfo: [],
+            favoriteList: [],
+            isLiked: false,
         };
     },
     props: {
@@ -54,22 +61,56 @@ export default {
         console.log(this.attraction);
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
         console.log(this.userinfo);
+
+        axiosInstance.get("http://localhost/api/v1/attraction/favorite")
+            .then((res) => {
+                this.favoriteList = res.data;
+                console.log("favorite List")
+                console.log(this.attraction.contentId)
+                for (let index = 0; index < this.favoriteList.length; index++) {
+                    if (this.favoriteList[index].contentId == this.attraction.contentId) {
+                        this.isLiked = true;
+                        console.log("가지고있음!!")
+                        console.log(this.isLiked)
+                        break;
+                    }
+                }
+                console.log(this.favoriteList)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     },
     methods: {
         registerAttraction() {
-            console.log("관심지로 등록하기");
+            // console.log("관심지로 등록하기");
 
             axiosInstance.post(
-                `http://localhost/api/v1/attraction/favorite/regist/${this.attraction.contentId}`
-            )
+                `http://localhost/api/v1/attraction/favorite/regist/${this.attraction.contentId}`)
                 .then(() => {
+                    this.isLiked = true;
                     alert("관심지 등록 성공")
+                    // this.$emit('close');
                 })
                 .catch((err) => {
                     console.log(err);
                     alert("관심지 등록 실패")
                 });
         },
+        cancelRegisterAttraction() {
+            console.log("관심지 취소하기")
+
+            axiosInstance.post(`http://localhost/api/v1/attraction/favorite/delete/${this.attraction.contentId}`)
+                .then(() => {
+                    this.isLiked = false;
+                    alert("관심지 해제 성공")
+                    // this.$emit('close');
+                })
+                .catch((err) => {
+                    console.log(err);
+                    alert("관심지 해제 실패")
+                })
+        }
     },
 };
 </script>

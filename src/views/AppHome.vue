@@ -44,7 +44,8 @@
         <div style="margin-top: 50px;">
           <div class="card" style="width: 20rem; height: 25rem; display: inline-block;" v-for="(show) in showRestaurant"
             :key="show.contentId">
-            <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
+            <img @click="isModal = true" :src="show.first_image" class="" alt=""
+              style="margin-top: 30px; width: 200px; height: 200px;">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
@@ -58,7 +59,7 @@
 
 <script>
 import axiosInstance from "@/api/axiosInstance";
-import MainHeader from "@/components/Main-Header.vue"
+import MainHeader from "@/components/Main-Header.vue";
 import SubHeader from "@/components/Sub-Header.vue";
 
 export default {
@@ -78,7 +79,8 @@ export default {
       distances: [],
       showAttractions: [],
       showShopping: [],
-      showRestaurant: []
+      showRestaurant: [],
+      isModal: false,
     }
   },
   methods: {
