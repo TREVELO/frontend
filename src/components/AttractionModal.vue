@@ -3,7 +3,6 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-
                     <div class="modal-header">
                         <h3 slot="header">관광지 정보</h3>
                         <button class="modal-default-button" @click="$emit('close')">
@@ -14,7 +13,7 @@
                     <div class="modal-body">
                         <slot name="body">
                             <div class="form-group">
-                                <img :src="attraction.first_image" alt="" height="300px" width="300px">
+                                <img :src="attraction.first_image" alt="" height="300px" width="300px" />
                             </div>
                             <div class="form-group">
                                 <b>이름 : {{ attraction.title }}</b>
@@ -22,9 +21,11 @@
                             <div>
                                 <b>위치 : {{ attraction.addr }}</b>
                             </div>
+                            <button class="btn-success btn" style="margin-top: 15px" @click="registerAttraction">
+                                관심 관광지로 등록하기
+                            </button>
                         </slot>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -37,27 +38,47 @@ https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-pho
 -->
 
 <script>
+import axiosInstance from "@/api/axiosInstance";
 
 export default {
     data() {
         return {
-        }
+            userinfo: [],
+        };
     },
     props: {
         attraction: Object,
     },
     mounted() {
-        console.log("Modal")
-        console.log(this.attraction)
-    }
-}
+        console.log("Modal");
+        console.log(this.attraction);
+        this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+        console.log(this.userinfo);
+    },
+    methods: {
+        registerAttraction() {
+            console.log("관심지로 등록하기");
+
+            axiosInstance.post(
+                `http://localhost/api/v1/attraction/favorite/regist/${this.attraction.contentId}`
+            )
+                .then(() => {
+                    alert("관심지 등록 성공")
+                })
+                .catch((err) => {
+                    console.log(err);
+                    alert("관심지 등록 실패")
+                });
+        },
+    },
+};
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap");
 
 * {
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
 }
 
 .modal-mask {
@@ -67,11 +88,10 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.5);
     display: table;
-    transition: opacity .3s ease;
+    transition: opacity 0.3s ease;
 }
-
 
 .modal-wrapper {
     display: table-cell;
@@ -79,29 +99,25 @@ export default {
     color: #555555;
 }
 
-
 .modal-container {
     width: 450px;
     margin: 0px auto;
     padding: 20px 30px;
     background-color: #fff;
     border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-    transition: all .3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+    transition: all 0.3s ease;
     font-family: Helvetica, Arial, sans-serif;
 }
-
 
 .modal-header h3 {
     margin-top: 0;
     color: #42b983;
 }
 
-
 .modal-body {
     margin: 20px 0;
 }
-
 
 .modal-default-button {
     float: right;
@@ -109,7 +125,6 @@ export default {
     color: gray;
     background: #fff;
 }
-
 
 /*
  * The following styles are auto-applied to elements with
@@ -120,16 +135,13 @@ export default {
  * these styles.
  */
 
-
 .modal-enter {
     opacity: 0;
 }
 
-
 .modal-leave-active {
     opacity: 0;
 }
-
 
 .modal-enter .modal-container,
 .modal-leave-active .modal-container {
