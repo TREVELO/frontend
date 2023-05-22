@@ -3,6 +3,7 @@
         <b>kakao Map화면</b>
         <div id="map" style="margin: 0 auto;"></div>
         <div class="button-group">
+            <attraction-modal v-if="isModal" @close="isModal = false" :attraction="attractionInfo"></attraction-modal>
             <button @click="displayMarker(markerPositions)">marker set 1</button>
             <!-- <button @click="displayMarker([])">Erase Marker</button> -->
             <button>Go Search</button>
@@ -13,15 +14,18 @@
 
 <script>
 import axiosInstance from '@/api/axiosInstance';
+import AttractionModal from '../AttractionModal.vue';
 
 export default {
+    components: { AttractionModal },
     name: "MapMap",
     data() {
         return {
             markerPositions: [],
             markers: [],
-            infowindow: null,
+            isModal: false,
             attractions: [],
+            attractionInfo: {},
         };
     },
     mounted() {
@@ -107,7 +111,7 @@ export default {
                 );
 
                 this.markers.customData = {
-                    contentId : "contenteId 정보 저장"
+                    contentId: "contenteId 정보 저장"
                 }
 
                 this.markers.forEach((marker, index) => {
@@ -131,17 +135,19 @@ export default {
 
             axiosInstance.post(`http://localhost/api/v1/attraction/favorite/view/${contentId}`)
                 .then((res) => {
-                    const attractionInfo = res.data;
-                    console.log(attractionInfo)
+                    this.attractionInfo = res.data;
+                    console.log(this.attractionInfo);
+                    console.log("attractionInfo Modal Start")
+                    this.isModal = true;
                 })
                 .catch((err) => {
-                console.log(err)
-            })
+                    console.log(err)
+                })
             // const clickedMarker = this.markers[index];
             // const contentId = clickedMarker.customData.contentId;
 
             // console.log('마커 클릭 - contentId:', contentId);
-        }
+        },
     },
     created() {
 
