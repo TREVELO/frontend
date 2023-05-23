@@ -6,7 +6,7 @@
 
 
                     <div class="modal-header">
-                        <h3 slot="header">로그인</h3>
+                        <h3 slot="header">회원가입</h3>
                         <button class="modal-default-button" @click="$emit('close')">
                             X
                         </button>
@@ -14,17 +14,34 @@
 
                     <div class="modal-body">
                         <slot name="body">
-                            <form @submit.prevent="login">
+                            <form @submit.prevent="join">
+
+                                <div class="form-group">
+                                    <input type="text" v-model="form.name" class="form-control" id="name"
+                                        placeholder="Your Name...">
+                                </div>
+
                                 <div class="form-group">
                                     <input type="text" v-model="form.loginId" class="form-control" id="loginId"
-                                        placeholder="Your login id...">
+                                        placeholder="Your Id...">
                                 </div>
+
                                 <div class="form-group">
-                                    <input type="password" v-model="form.loginPassword" class="form-control" id="password"
-                                        placeholder="Your password...">
+                                    <input type="password" v-model="form.loginPassword" class="form-control"
+                                        id="loginPassword" placeholder="Your Password...">
                                 </div>
+
+                                <div class="form-group">
+                                    <input type="date" v-model="form.birthday" class="form-control" id="birthday">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="email" v-model="form.email" class="form-control" id="email"
+                                        placeholder="Your email...">
+                                </div>
+
                                 <div>
-                                    <button type="submit" class="btn btn-info btn-block btn-round">Login</button>
+                                    <button type="submit" class="btn btn-info btn-block btn-round">Join</button>
                                 </div>
                             </form>
                         </slot>
@@ -41,13 +58,13 @@
                     </div>
 
 
-                    <div class="signup-section model-footer" style="text-align: center;">회원이 아니신가요? <a href="#a"
+                    <!-- <div class="signup-section model-footer" style="text-align: center;">회원이 아니신가요? <a href="#a"
                             class="text-info"> 회원 가입</a>.
                     </div>
 
                     <div class="signup-section model-footer" style="text-align: center;">비밀번호를 잊으셨나요? <a href="#a"
                             class="text-info"> 비밀번호 찾기</a>.
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
@@ -57,16 +74,13 @@
   
 <script>
 import axios from "axios";
+// import memberStore from "@/store/modules/memberStore";
 import { mapActions, mapGetters } from "vuex";
-//import MainHeaderVue from './Main-Header.vue';
 
 export default {
     data() {
         return {
-            form: {
-                loginId: '',
-                loginPassword: '',
-            },
+            form: {},
             errors: [],
             errorshow: false,
         }
@@ -80,50 +94,55 @@ export default {
 
         validationCheck() {
             this.errors = [];
+            if (!this.form.name) {
+                this.errors.push("이름을 입력해주세요.")
+            }
             if (!this.form.loginId) {
                 this.errors.push("아이디를 입력해주세요.");
             }
             if (!this.form.loginPassword) {
                 this.errors.push("비밀번호를 입력해주세요.");
             }
+            if (!this.form.birthday) {
+                this.errors.push("생일을 입력해주세요.")
+            }
+            if (!this.form.email) {
+                this.errors.push("이메일을 입력해주세요.")
+            }
             if (!this.errorshow) {
                 this.errorshow = true;
             }
         },
-        async login() {
-            console.log("login request");
-            console.log("id = " + this.form.loginId + " password " + this.form.loginPassword);
+        async join() {
+            console.log("join request");
+            console.log(this.form)
             this.validationCheck();
             // console.log(this.errors);
             if (this.errors.length === 0) {
                 console.log(this.form);
 
                 try {
-                    const response = await axios.post('http://localhost/api/v1/member/login', this.form);
+                    const response = await axios.post('http://localhost/api/v1/member/join', this.form);
                     console.log(response.data);
 
-                    const token = response.data; // 응답에서 토큰 추출
+                    // const token = response.data; // 응답에서 토큰 추출
 
-                    // 토큰을 세션 스토리지에 저장
-                    sessionStorage.setItem("token", token);
+                    // // 토큰을 세션 스토리지에 저장
+                    // sessionStorage.setItem("token", token);
 
-                    // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
-                    this.$store.dispatch("memberStore/setToken", token);
-                    console.log(token);
-                    console.log("token is");
-                    console.log(this.$store.getters["memberStore/getToken"]);
-                    console.log(sessionStorage.getItem("token"));
+                    // // Vuex의 memberStore 모듈의 setToken 액션을 호출하여 토큰 설정
+                    // this.$store.dispatch("memberStore/setToken", token);
+                    // console.log(token);
+                    // console.log("token is");
+                    // console.log(this.$store.getters["memberStore/getToken"]);
+                    // console.log(sessionStorage.getItem("token"));
 
-                    try {
-                        this.userinfo = this.$store.dispatch("memberStore/fetchUserinfo");
+                    // console.log("userinfo 생성");
 
-                    } catch (err) {
-                        console.log(err);
-                    }
-
-                    console.log("유저 정보")
+                    // this.$store.dispatch("memberStore/fetchUserinfo");
+                    // console.log("유저 정보")
                     this.$emit('close');
-                    //{ MainHeaderVue.mainHeaderReload() }
+                    window.location.reload(true);
                 } catch (error) {
                     console.log(error.response.data);
                     this.errors = [];

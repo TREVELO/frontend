@@ -14,6 +14,13 @@ const memberStore = {
         SET_USERINFO(state, userinfo) {
             state.userinfo = userinfo; // 사용자 정보 상태 업데이트
         },
+        RESET_MEMBER_STATE(state) {
+            // memberStore의 상태 값을 초기화하는 로직을 작성합니다.
+            // 예를 들면 state의 모든 속성 값을 기본값으로 설정할 수 있습니다.
+            state.userinfo = null;
+            state.token = null;
+            // ...
+        }
     },
     actions: {
         setToken({ commit }, token) {
@@ -28,13 +35,20 @@ const memberStore = {
         },
         async fetchUserinfo({ commit }) {
             try {
-                const response = await axiosInstance.get("/member/mypage"); // /mypage로 GET 요청 보내기
-                const userinfo = response.data; // 응답 데이터에서 사용자 정보 추출
-                commit("SET_USERINFO", userinfo); // SET_USERINFO 뮤테이션을 호출하여 사용자 정보 설정
+                await axiosInstance.get("/member/mypage")
+                    .then(({ data }) => {
+                        const userinfo = data;
+                        commit("SET_USERINFO", userinfo);
+                    }); // /mypage로 GET 요청 보내기
+                // const userinfo = response.data; // 응답 데이터에서 사용자 정보 추출
+                // commit("SET_USERINFO", userinfo); // SET_USERINFO 뮤테이션을 호출하여 사용자 정보 설정
             } catch (error) {
                 console.error(error);
             }
         },
+        resetMemberState({ commit }) {
+            commit('RESET_MEMBER_STATE')
+        }
     },
     getters: {
         getToken(state) {

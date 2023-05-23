@@ -1,12 +1,12 @@
 <template>
     <div class="home">
         <div id="header">
-            <main-header @mark="fetchData()" />
-            <sub-header></sub-header>
+            <main-header />
+            <sub-header />
+            <b>AppFavorite창</b>
+            <router-view></router-view>
+            <FooterVue></FooterVue>
         </div>
-        <b>Map창</b>
-        <router-view ref="MapMap"></router-view>
-        <FooterVue></FooterVue>
     </div>
 </template>
 
@@ -16,20 +16,13 @@ import SubHeader from "@/components/Sub-Header.vue";
 import FooterVue from "@/components/FooterVue.vue";
 
 export default {
-    name: "AppMap",
+    name: 'AppFavorite',
     components: {
         'main-header': MainHeader,
         'sub-header': SubHeader,
         FooterVue,
-    },
-    methods: {
-        fetchData() {
-            this.$nextTick(() => {
-                this.$refs.MapMap.fetchData()
-            })
-        }
     }
 }
 </script>
 
-<style></style>
+<style scoped></style>

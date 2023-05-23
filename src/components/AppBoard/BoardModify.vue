@@ -14,7 +14,7 @@
                     <b-form @submit="onSubmit" @reset="onReset">
                         <b-form-group id="userid-group" label="작성자:" label-for="userid">
                             <b-form-input id="userid" v-model="article.memberId" type="text" required
-                                placeholder="작성자 입력..."></b-form-input>
+                                placeholder="작성자 입력..." readonly style="background-color: beige;"></b-form-input>
                         </b-form-group>
 
                         <b-form-group id="subject-group" label="제목:" label-for="subject">
