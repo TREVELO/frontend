@@ -85,6 +85,11 @@ const routes = [
                 name: "roomView",
                 component: () => import("@/components/AppRoom/RoomView"),
             },
+            {
+                path: "write",
+                name: "roomWrite",
+                component: () => import("@/components/AppRoom/RoomWrite"),
+            },
         ],
     },
 ];

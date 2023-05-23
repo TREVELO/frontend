@@ -35,6 +35,7 @@
                     </div>
                 </div>
             </div>
+            <button v-if="isOwner" class="btn btn-danger" @click="deleteRoom">숙소 삭제</button>
         </div>
     </div>
 </template>
@@ -53,7 +54,9 @@ export default {
             selectedDate: "", // 선택된 예약 날짜
             selectedPicture: "", // 선택된 사진
             roomPictures: [], // 숙소 사진 목록
+            ownerId: "",
             userinfo: [],
+            isOwner: false,
         };
     },
     computed: {
@@ -78,21 +81,38 @@ export default {
                 .get(`/room/${roomId}`)
                 .then((response) => {
                     const roomData = response.data; // 백엔드에서 받아온 데이터
-
+                    console.log(roomData);
                     // 숙소 정보 초기화
                     this.roomName = roomData.roomName;
                     this.pricePerNight = roomData.pricePerNight;
                     this.address = roomData.address;
                     this.introduce = roomData.introduce;
-
+                    this.ownerId = roomData.ownerId;
                     // 숙소 사진 목록 초기화
                     this.roomPictures = roomData.roomPictures;
 
                     // 초기 선택된 사진 초기화
                     this.selectedPicture = roomData.roomPictures[0];
+
+                    this.isOwner = this.userinfo.id == this.ownerId;
+                    console.log(this.isOwner);
                 })
                 .catch((error) => {
                     console.error("Error fetching room data:", error);
+                });
+        },
+        deleteRoom() {
+            const roomId = this.$route.params.roomId;
+
+            axiosInstance
+                .delete(`/room/${roomId}`)
+                .then((response) => {
+                    console.log(response.data);
+                    // 삭제 성공 시, 처리 로직 추가
+                    // 예를 들어, 삭제 후 홈 화면으로 이동하거나 메시지를 표시하는 등의 작업을 수행할 수 있습니다.
+                })
+                .catch((error) => {
+                    console.error("Error deleting room:", error);
                 });
         },
     },

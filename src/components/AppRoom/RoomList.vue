@@ -54,7 +54,6 @@ export default {
         // 로그인한 멤버의 롤(Role)에 따라 숙소 등록 버튼의 가시성을 설정합니다.
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
         this.canWriteRoom = this.userinfo.role == "ADMIN" || this.userinfo.role == "SELLER";
-        console.log(this.canWriteRoom);
     },
     computed: {
         ...mapGetters("memberStore", ["getUserinfo"]),
@@ -62,7 +61,7 @@ export default {
     methods: {
         goToWriteRoom() {
             // 숙소 등록 페이지로 이동합니다.
-            this.$router.push({ name: "writeRoom" });
+            this.$router.push({ name: "roomWrite" });
         },
     },
 };
