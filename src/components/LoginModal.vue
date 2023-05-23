@@ -116,6 +116,7 @@ export default {
 
                     try {
                         this.userinfo = this.$store.dispatch("memberStore/fetchUserinfo");
+
                     } catch (err) {
                         console.log(err);
                     }

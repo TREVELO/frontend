@@ -70,6 +70,19 @@ const routes = [
         ],
     },
     {
+        path: "/favorite",
+        name: "favorite",
+        component: () => import("@/views/AppFavorite"),
+        redirect: "/favorite/list",
+        children: [
+            {
+                path: "list",
+                name: "FavoriteList",
+                component: () => import("@/components/AppFavorite/FavoriteList"),
+            },
+        ],
+    },
+    {
         path: "/room",
         name: "room",
         component: () => import("@/views/AppRoomList"),

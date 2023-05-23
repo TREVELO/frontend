@@ -4,10 +4,10 @@
         <div id="map" style="margin: 0 auto;"></div>
         <div class="button-group">
             <attraction-modal v-if="isModal" @close="isModal = false" :attraction="attractionInfo"></attraction-modal>
-            <button @click="displayMarker(markerPositions)">marker set 1</button>
+            <!-- <button @click="displayMarker(markerPositions)">marker set 1</button> -->
             <!-- <button @click="displayMarker([])">Erase Marker</button> -->
-            <button>Go Search</button>
-            <button>My Favorite</button>
+            <!-- <button>Go Search</button> -->
+            <!-- <button>My Favorite</button> -->
         </div>
     </div>
 </template>
@@ -39,39 +39,7 @@ export default {
                 "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=68a4947f8091662e797250d4aa2d4a54";
             document.head.appendChild(script);
         }
-
-        let subject = this.$route.params.subject;
-        let sentence = this.$route.params.sentence;
-
-        console.log(subject);
-        console.log(sentence);
-
-        if (subject != undefined && sentence != undefined) {
-            axiosInstance.post(`http://localhost/api/v1/attraction/search?title=${sentence}&sidoCode=&gugunCode=&contentType=${subject}`)
-                .then((res) => {
-                    console.log(res.data)
-                    for (let index = 0; index < res.data.length; index++) {
-                        this.attractions.push(res.data[index])
-                    }
-
-                    for (let index = 0; index < this.attractions.length; index++) {
-                        this.markerPositions.push([this.attractions[index].latitude, this.attractions[index].longitude, this.attractions[index].contentId])
-                    }
-
-                    console.log("markerPositions 갯수")
-                    console.log(this.markerPositions)
-                    if (this.markerPositions.length > 0) {
-                        this.displayMarker(this.markerPositions);
-                    }
-                    // this.markerPositions.push([this.attractions[0].latitude, this.attractions[0].longitude])
-                    // console.log(this.markerPositions.length)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        }
-
-
+        this.fetchData();
     },
     methods: {
         initMap() {
@@ -148,6 +116,42 @@ export default {
 
             // console.log('마커 클릭 - contentId:', contentId);
         },
+        fetchData() {
+            let subject = this.$route.params.subject;
+            let sentence = this.$route.params.sentence;
+
+            console.log(subject);
+            console.log(sentence);
+
+            if (subject != undefined && sentence != undefined) {
+                axiosInstance.post(`http://localhost/api/v1/attraction/search?title=${sentence}&sidoCode=&gugunCode=&contentType=${subject}`)
+                    .then((res) => {
+                        console.log(res.data)
+
+                        this.attractions.splice(0, this.attractions.length);
+                        this.markerPositions.splice(0, this.markerPositions.length)
+
+                        for (let index = 0; index < res.data.length; index++) {
+                            this.attractions.push(res.data[index])
+                        }
+
+                        for (let index = 0; index < this.attractions.length; index++) {
+                            this.markerPositions.push([this.attractions[index].latitude, this.attractions[index].longitude, this.attractions[index].contentId])
+                        }
+
+                        console.log("markerPositions 갯수")
+                        console.log(this.markerPositions)
+                        if (this.markerPositions.length > 0) {
+                            this.displayMarker(this.markerPositions);
+                        }
+                        // this.markerPositions.push([this.attractions[0].latitude, this.attractions[0].longitude])
+                        // console.log(this.markerPositions.length)
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            }
+        }
     },
     created() {
 
@@ -163,8 +167,8 @@ export default {
 
 <style scoped>
 #map {
-    width: 1200px;
-    height: 600px;
+    width: 1400px;
+    height: 800px;
 }
 
 .button-group {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <b>MypageView화면</b>
-        <table class="table" style="margin-top: 30px">
+        <table class="table col-9" style="margin: 0 auto; margin-top: 30px">
             <thead>
                 <tr>
                     <th>항목</th>
@@ -47,12 +47,12 @@
         </table>
 
         <div>
+            <button class="btn btn-outline-secondary">마일리지 충전</button>
             <button class="btn btn-outline-secondary">
                 <router-link to="modify" style="text-decoration: none; color: black"
                     >회원정보 수정</router-link
                 >
             </button>
-            <button class="btn btn-outline-secondary">관심 관광지</button>
             <button class="btn btn-outline-secondary">예약내역</button>
         </div>
     </div>

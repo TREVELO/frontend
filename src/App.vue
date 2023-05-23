@@ -11,7 +11,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -32,4 +32,10 @@ nav a {
 nav a.router-link-exact-active {
     color: #42b983;
 }
+
+* {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap');
 </style>

@@ -16,7 +16,7 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-table striped hover :items="articles" :fields="fields" @row-clicked="viewArticle">
+                    <b-table hover :items="articles" :fields="fields" @row-clicked="viewArticle">
                         <template #cell(subject)="data">
                             <router-link :to="{
                                 name: 'BoardList',
@@ -41,8 +41,6 @@ export default {
         return {
             articles: [],
             fields: [
-                { key: "boardId", label: "글번호" },
-                { key: "memberId", label: "글쓴이" },
                 { key: "title", label: "제목" },
                 { key: "hit", label: "조회수" },
                 { key: "createdat", label: "작성날짜" },
@@ -50,7 +48,6 @@ export default {
         };
     },
     created() {
-        console.log("created 실행");
         axiosInstance
             .get("http://localhost/api/v1/board/list")
             .then((res) => {
