@@ -105,7 +105,10 @@ export default {
       window.location.reload(true)
     },
     goMypage() {
-      this.$router.push({ name: 'mypage' })
+      if (this.$route.path !== '/mypage/view') {
+        this.$router.push({ name: 'mypage' })
+      }
+
     },
     goSearch(searchbox) {
       console.log("goSearch 실행")

@@ -5,7 +5,7 @@
             <sub-header></sub-header>
         </div>
         <b>Map창</b>
-        <router-view :key="$route.params" ref="MapMap"></router-view>
+        <router-view ref="MapMap"></router-view>
     </div>
 </template>
 

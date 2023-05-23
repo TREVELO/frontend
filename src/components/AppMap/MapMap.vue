@@ -4,10 +4,10 @@
         <div id="map" style="margin: 0 auto;"></div>
         <div class="button-group">
             <attraction-modal v-if="isModal" @close="isModal = false" :attraction="attractionInfo"></attraction-modal>
-            <button @click="displayMarker(markerPositions)">marker set 1</button>
+            <!-- <button @click="displayMarker(markerPositions)">marker set 1</button> -->
             <!-- <button @click="displayMarker([])">Erase Marker</button> -->
-            <button>Go Search</button>
-            <button>My Favorite</button>
+            <!-- <button>Go Search</button> -->
+            <!-- <button>My Favorite</button> -->
         </div>
     </div>
 </template>

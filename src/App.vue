@@ -2,7 +2,7 @@
 <template>
   <div id="app">
 
-    <router-view :key="$route.params" />
+    <router-view />
 
   </div>
 </template>

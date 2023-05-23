@@ -10,52 +10,55 @@
         현재 위치 기반 추천 장소 찾기
       </button>
       <div v-else>
-        <attraction-modal v-if="isModal" @close="isModal = false"></attraction-modal>
         <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 관광지</b><button class="btn btn-primary"
             style="margin-left: 10px; border: none;" @click="makeRandom(nearAttractions, showAttractions)">새로
-            보기</button></div>
+            보기</button>
+        </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;" v-for="(show) in showAttractions"
-            :key="show.contentId">
+          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;"
+            v-for="(show, index) in showAttractions" :key="show.contentId">
             <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
-              <button class="btn btn-outline-dark">상세 보기</button>
+              <button class="btn btn-outline-dark" @click="showDetail(showAttractions, index)">상세 보기</button>
             </div>
           </div>
         </div>
         <!--  -->
         <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 쇼핑</b><button class="btn btn-primary"
             style="margin-left: 10px; border: none;" @click="makeRandom(nearShopping, showShopping)">새로
-            보기</button></div>
+            보기</button>
+        </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;" v-for="(show) in showShopping"
-            :key="show.contentId">
+          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;"
+            v-for="(show, index) in showShopping" :key="show.contentId">
             <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
-              <button class="btn btn-outline-dark">상세 보기</button>
+              <button class="btn btn-outline-dark" @click="showDetail(showShopping, index)">상세 보기</button>
             </div>
           </div>
         </div>
         <!--  -->
         <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 음식점</b><button class="btn btn-primary"
             style="margin-left: 10px; border: none;" @click="makeRandom(nearRestaurant, showRestaurant)">새로
-            보기</button></div>
+            보기</button>
+        </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;" v-for="(show) in showRestaurant"
-            :key="show.contentId">
+          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;"
+            v-for="(show, index) in showRestaurant" :key="show.contentId">
             <img @click="isModal = true" :src="show.first_image" class="" alt=""
               style="margin-top: 30px; width: 200px; height: 200px;">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
-              <button class="btn btn-outline-dark" @click="isModal = true">상세 보기</button>
+              <button class="btn btn-outline-dark" @click="showDetail(showRestaurant, index)">상세 보기</button>
             </div>
           </div>
         </div>
+        <attraction-modal v-if="isModal" @close="isModal = false" :attraction="attractionInfo"></attraction-modal>
       </div>
     </div>
   </div>
@@ -87,6 +90,7 @@ export default {
       showShopping: [],
       showRestaurant: [],
       isModal: false,
+      attractionInfo: {},
     }
   },
   methods: {
@@ -179,6 +183,11 @@ export default {
         showArray.push(originalArray[array[i]]);
       }
       console.log(showArray)
+    },
+    showDetail(array, index) {
+      console.log("showDetail")
+      this.isModal = true;
+      this.attractionInfo = array[index];
     }
   }
 }
