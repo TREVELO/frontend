@@ -10,12 +10,13 @@
         현재 위치 기반 추천 장소 찾기
       </button>
       <div v-else>
-        <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 관광지</b><button class="btn btn-primary"
-            style="margin-left: 10px; border: none;" @click="makeRandom(nearAttractions, showAttractions)">새로
-            보기</button>
+        <div style="margin-top: 50px;"><b style="color: blue; font-size: 30px; vertical-align: middle;">추천 관광지</b><button
+            class="btn btn-info" style="margin-left: 10px; border: none;"
+            @click="makeRandom(nearAttractions, showAttractions)">새로
+            고침</button>
         </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;"
+          <div class="card" style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;"
             v-for="(show, index) in showAttractions" :key="show.contentId">
             <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
             <div class="card-body" style="height: ;">
@@ -26,12 +27,13 @@
           </div>
         </div>
         <!--  -->
-        <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 쇼핑</b><button class="btn btn-primary"
-            style="margin-left: 10px; border: none;" @click="makeRandom(nearShopping, showShopping)">새로
-            보기</button>
+        <div style="margin-top: 50px;"><b style="color: blue; font-size: 30px; vertical-align: middle;">추천 쇼핑</b><button
+            class="btn btn-info" style="margin-left: 10px; border: none;"
+            @click="makeRandom(nearShopping, showShopping)">새로
+            고침</button>
         </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;"
+          <div class="card" style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;"
             v-for="(show, index) in showShopping" :key="show.contentId">
             <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
             <div class="card-body" style="height: ;">
@@ -42,12 +44,13 @@
           </div>
         </div>
         <!--  -->
-        <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 음식점</b><button class="btn btn-primary"
-            style="margin-left: 10px; border: none;" @click="makeRandom(nearRestaurant, showRestaurant)">새로
-            보기</button>
+        <div style="margin-top: 50px;"><b style="color: blue; font-size: 30px; vertical-align: middle;">추천 음식점</b><button
+            class="btn btn-info" style="margin-left: 10px; border: none; vertical-align: middle;"
+            @click="makeRandom(nearRestaurant, showRestaurant)">새로
+            고침</button>
         </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block;"
+          <div class="card" style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;"
             v-for="(show, index) in showRestaurant" :key="show.contentId">
             <img @click="isModal = true" :src="show.first_image" class="" alt=""
               style="margin-top: 30px; width: 200px; height: 200px;">
@@ -92,6 +95,9 @@ export default {
       isModal: false,
       attractionInfo: {},
     }
+  },
+  mounted() {
+    this.getCurrentPosition();
   },
   methods: {
     getCurrentPosition() {

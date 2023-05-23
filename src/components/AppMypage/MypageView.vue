@@ -1,7 +1,7 @@
 <template>
     <div>
         <b>MypageView화면</b>
-        <table class="table" style="margin-top: 30px">
+        <table class="table col-9" style="margin: 0 auto; margin-top: 30px; ">
             <thead>
                 <tr>
                     <th>항목</th>

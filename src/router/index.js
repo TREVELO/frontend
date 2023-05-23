@@ -67,6 +67,19 @@ const routes = [
         component: () => import("@/components/AppMypage/MypageModify")
       }
     ]
+  },
+  {
+    path : "/favorite",
+    name : "favorite",
+    component : () => import("@/views/AppFavorite"),
+    redirect : "/favorite/list",
+    children : [
+      {
+        path : "list",
+        name : "FavoriteList",
+        component : () => import("@/components/AppFavorite/FavoriteList")
+      }
+    ]
   }
 ]
 
