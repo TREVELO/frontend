@@ -135,6 +135,14 @@ export default {
                             // successUrl: "http://localhost/api/v1/payment/success",
                             // failUrl: "http://localhost/api/v1/payment/fail",
                         })
+                        .then((response) => {
+                            // 백엔드에서 리턴한 result 값 활용
+                            const result = response.data;
+                            console.log(result);
+                            // 원하는 처리 로직 수행
+                            // 예시: MyPageView 라우터로 이동
+                            this.$router.push({ name: "MyPageView" }).catch(() => {});
+                        })
                         .catch(function (error) {
                             if (error.code === "USER_CANCEL") {
                                 // 결제 고객이 결제창을 닫았을 때 에러 처리

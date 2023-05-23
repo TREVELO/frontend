@@ -35,7 +35,12 @@
                     </div>
                 </div>
             </div>
-            <button v-if="isOwner" class="btn btn-danger" @click="deleteRoom">숙소 삭제</button>
+            <button v-if="isOwner" class="btn btn-info spaced-button" @click="deleteRoom">
+                숙소 수정
+            </button>
+            <button v-if="isOwner" class="btn btn-danger spaced-button" @click="deleteRoom">
+                숙소 삭제
+            </button>
         </div>
     </div>
 </template>
@@ -110,6 +115,11 @@ export default {
                     console.log(response.data);
                     // 삭제 성공 시, 처리 로직 추가
                     // 예를 들어, 삭제 후 홈 화면으로 이동하거나 메시지를 표시하는 등의 작업을 수행할 수 있습니다.
+                    alert(response.data);
+                    const vm = this; // 컴포넌트 인스턴스를 변수에 저장
+                    setTimeout(function () {
+                        vm.$router.push({ name: "roomList" }); // setTimeout 내에서 $router.push 호출
+                    }, 0);
                 })
                 .catch((error) => {
                     console.error("Error deleting room:", error);
@@ -130,5 +140,9 @@ export default {
 
 .gallery .img-thumbnail:hover {
     border-color: #007bff;
+}
+
+.spaced-button {
+    margin-right: 10px; /* 원하는 간격 크기를 지정합니다. */
 }
 </style>
