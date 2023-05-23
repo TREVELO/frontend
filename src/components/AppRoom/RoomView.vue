@@ -48,6 +48,15 @@
         <button class="btn btn-primary" @click="makeReservation">
           예약하기
         </button>
+                                  <div class="signup-section model-footer" style="text-align: center;">
+                        <p v-if="errorshow">
+                        <ul id="errorMsg">
+                            <li v-for="error in errors" :key="error">
+                                <b>{{ error }}</b>
+                            </li>
+                        </ul>
+                        </p>
+                    </div>
       </div>
     </div>
 
@@ -92,6 +101,8 @@ export default {
       ownerId: "",
       userinfo: [],
       isOwner: false,
+                  errors: [],
+            errorshow: false,
     };
   },
   computed: {
@@ -178,6 +189,7 @@ export default {
         return;
       }
 
+        confirm(`${this.checkInDate} 부터 ${this.checkOutDate} 까지 예약하시겠습니까? 총 숙박 금액의 10%가 예약금으로 결제 될 것입니다.`);
       const reservationData = {
         roomId: this.roomId,
         customerId: this.userinfo.id,
@@ -185,6 +197,19 @@ export default {
         checkOutDate: this.checkOutDate,
       };
       console.log(reservationData);
+      axiosInstance.post(`/reservation/${this.roomId}`, reservationData)
+      .then((response) => {
+        console.log(response.data);
+        alert("예약이 완료되었습니다.");
+      }).catch((error) => {
+                    console.log(error.response.data);
+                    this.errors = [];
+                    this.errors.push(error.response.data);
+                    alert(this.errors);
+                    if (!this.errorshow) {
+                        this.errorshow = true;
+                    }
+      })
     },
   },
 };
@@ -205,5 +230,11 @@ export default {
 
 .spaced-button {
   margin-right: 10px; /* 원하는 간격 크기를 지정합니다. */
+}
+
+#errorMsg {
+    color: crimson;
+    font-size: 13px;
+    list-style: none;
 }
 </style>
