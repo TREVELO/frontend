@@ -2,12 +2,7 @@
     <div class="container">
         <div class="row row-cols-1 row-cols-md-4">
             <div class="col mb-4" v-for="room in roomList" :key="room.id">
-                <router-link
-                    :to="{
-                        name: 'roomView',
-                        params: { roomId: room.id },
-                    }"
-                >
+                <router-link :to="{ name: 'roomView', params: { roomId: room.id } }">
                     <div class="card">
                         <img :src="room.picture" class="card-img-top" alt="Room Picture" />
                         <div class="card-body">
@@ -19,16 +14,22 @@
                 </router-link>
             </div>
         </div>
+        <button v-if="canWriteRoom" class="btn btn-primary" @click="goToWriteRoom">
+            숙소 등록
+        </button>
     </div>
 </template>
 
 <script>
 import axiosInstance from "@/api/axiosInstance";
+import { mapGetters } from "vuex";
 
 export default {
     data() {
         return {
             roomList: [], // 숙소 목록 데이터
+            canWriteRoom: false, // 숙소 등록 버튼의 가시성을 제어하기 위한 변수
+            userinfo: [],
         };
     },
     created() {
@@ -49,6 +50,20 @@ export default {
             .catch((error) => {
                 console.error(error);
             });
+
+        // 로그인한 멤버의 롤(Role)에 따라 숙소 등록 버튼의 가시성을 설정합니다.
+        this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+        this.canWriteRoom = this.userinfo.role == "ADMIN" || this.userinfo.role == "SELLER";
+        console.log(this.canWriteRoom);
+    },
+    computed: {
+        ...mapGetters("memberStore", ["getUserinfo"]),
+    },
+    methods: {
+        goToWriteRoom() {
+            // 숙소 등록 페이지로 이동합니다.
+            this.$router.push({ name: "writeRoom" });
+        },
     },
 };
 </script>
