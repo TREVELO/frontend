@@ -41,8 +41,6 @@ export default {
         return {
             articles: [],
             fields: [
-                { key: "boardId", label: "글번호" },
-                { key: "memberId", label: "글쓴이" },
                 { key: "title", label: "제목" },
                 { key: "hit", label: "조회수" },
                 { key: "createdat", label: "작성날짜" },

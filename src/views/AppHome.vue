@@ -64,6 +64,7 @@
         <attraction-modal v-if="isModal" @close="isModal = false" :attraction="attractionInfo"></attraction-modal>
       </div>
     </div>
+    <FooterVue></FooterVue>
   </div>
 </template>
 
@@ -72,6 +73,8 @@ import axiosInstance from "@/api/axiosInstance";
 import MainHeader from "@/components/Main-Header.vue";
 import SubHeader from "@/components/Sub-Header.vue";
 import AttractionModal from "@/components/AttractionModal.vue";
+import FooterVue from "@/components/FooterVue.vue";
+
 
 export default {
   name: 'AppHome',
@@ -79,6 +82,7 @@ export default {
     'main-header': MainHeader,
     'sub-header': SubHeader,
     AttractionModal,
+    FooterVue,
   },
   data() {
     return {
@@ -96,7 +100,7 @@ export default {
       attractionInfo: {},
     }
   },
-  mounted() {
+  computed() {
     this.getCurrentPosition();
   },
   methods: {

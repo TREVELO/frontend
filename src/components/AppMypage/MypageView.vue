@@ -47,7 +47,6 @@
             <button class="btn btn-outline-secondary"><router-link to="modify"
                     style="text-decoration: none; color: black;">회원정보
                     수정</router-link></button>
-            <button class="btn btn-outline-secondary">관심 관광지</button>
             <button class="btn btn-outline-secondary">예약내역</button>
         </div>
     </div>
