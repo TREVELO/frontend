@@ -66,7 +66,7 @@
         <button
           v-if="isOwner"
           class="btn btn-info spaced-button"
-          @click="deleteRoom"
+          @click="goToModifyPage()"
         >
           숙소 수정
         </button>
@@ -148,6 +148,8 @@ export default {
         });
     },
     deleteRoom() {
+
+        confirm("정말 삭제하시겠습니까?");
       const roomId = this.$route.params.roomId;
 
       axiosInstance
@@ -202,15 +204,19 @@ export default {
         console.log(response.data);
         alert("예약이 완료되었습니다.");
       }).catch((error) => {
-                    console.log(error.response.data);
-                    this.errors = [];
-                    this.errors.push(error.response.data);
-                    alert(this.errors);
-                    if (!this.errorshow) {
-                        this.errorshow = true;
-                    }
+        console.log(error.response.data);
+        this.errors = [];
+        this.errors.push(error.response.data);
+        alert(this.errors);
+        if (!this.errorshow) {
+            this.errorshow = true;
+        }
       })
     },
+    goToModifyPage() {
+        var roomId = this.roomId;
+    this.$router.push({ name: 'roomModify', params: { roomId } });
+  },
   },
 };
 </script>
