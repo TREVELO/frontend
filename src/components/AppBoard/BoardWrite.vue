@@ -10,8 +10,8 @@
                 </b-col>
             </b-row>
         </b-container>
-        <b-row class="mb-1">
-            <b-col style="text-align: left">
+        <b-row class="mb-1" style="margin: 0 auto;">
+            <b-col class="col-7" style="text-align: left; margin: 0 auto;">
                 <b-form @submit="onSubmit">
                     <b-form-group id="title-group" label="제목:" label-for="title">
                         <b-form-input id="title" v-model="article.title" type="text" required

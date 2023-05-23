@@ -26,7 +26,8 @@
           </option>
         </select>
         <input type="text" id="searchWord" placeholder="검색어를 입력해주세요." required
-          style="font-family: 'Open Sans', sans-serif; padding-left: 9.5em;" v-model="searchbox.sentence">
+          style="background-color: white; font-family: 'Open Sans', sans-serif; padding-left: 9.5em;"
+          v-model="searchbox.sentence">
         <button type="submit" id="btn-search" @click="goSearch(searchbox)">
           <font-awesome-icon :icon="['fas', 'magnifying-glass']" style="height: 30px; vertical-align: middle;" />
         </button>
