@@ -69,7 +69,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .card-deck {
   margin-top: 20px;
 }
@@ -77,5 +77,16 @@ export default {
 .card {
   width: 18rem;
   margin-bottom: 20px;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 200px; /* 원하는 높이로 조정 */
+  object-fit: cover;
+}
+
+.col {
+  margin-bottom: 20px;
+  margin-right: 10px; /* 카드 간의 가로 간격 */
 }
 </style>
