@@ -1,157 +1,235 @@
 <template>
-    <div class="container">
-        <h1>숙소 등록</h1>
-        <form @submit.prevent="submitForm">
-            <div class="form-group">
-                <label for="roomName">숙소 이름</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="roomName"
-                    v-model="formData.roomName"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <label for="address">주소</label>
-                <div>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="address"
-                        :value="formattedAddress"
-                        disabled
-                        required
-                    />
-                    <button type="button" class="btn btn-secondary" @click="openDaumPostcode">
-                        우편번호 찾기
-                    </button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="introduce">소개</label>
-                <textarea
-                    class="form-control"
-                    id="introduce"
-                    v-model="formData.introduce"
-                    required
-                ></textarea>
-            </div>
-            <div class="form-group">
-                <label for="pricePerNight">하룻밤 가격</label>
-                <input
-                    type="number"
-                    class="form-control"
-                    id="pricePerNight"
-                    v-model="formData.pricePerNight"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <label for="imageUpload">사진 업로드</label>
-                <input
-                    type="file"
-                    id="imageUpload"
-                    accept="image/*"
-                    multiple
-                    @change="handleImageUpload"
-                />
-            </div>
-            <button type="submit" class="btn btn-primary">등록</button>
-        </form>
-    </div>
-</template>
+  <div class="container">
+    <h1>숙소 등록</h1>
+    <form @submit.prevent="submitForm">
+      <b-form-group label="숙소 이름" label-for="roomName">
+        <b-form-input
+          id="roomName"
+          v-model="formData.roomName"
+          required
+        ></b-form-input>
+      </b-form-group>
 
+      <b-form-group label="주소" label-for="address">
+        <div class="input-group">
+          <b-form-input
+            id="address"
+            :value="formattedAddress"
+            disabled
+            required
+          ></b-form-input>
+          <b-button variant="secondary" @click="openDaumPostcode">
+            우편번호 찾기
+          </b-button>
+        </div>
+      </b-form-group>
+
+      <b-form-group label="소개" label-for="introduce">
+        <b-form-textarea
+          id="introduce"
+          v-model="formData.introduce"
+          required
+        ></b-form-textarea>
+      </b-form-group>
+
+      <b-form-group label="하룻밤 가격" label-for="pricePerNight">
+        <b-form-input
+          id="pricePerNight"
+          type="number"
+          v-model="formData.pricePerNight"
+          required
+        ></b-form-input>
+      </b-form-group>
+
+      <div class="form-group">
+        <label for="imageUpload">사진 업로드</label>
+        <input
+          type="file"
+          id="imageUpload"
+          accept="image/*"
+          multiple
+          @change="handleImageUpload"
+        />
+        <!-- 이미지 목록 출력 -->
+        <div class="image-list">
+          <div
+            v-for="(image, index) in imageFiles"
+            :key="index"
+            class="image-item"
+          >
+            <img :src="getImageUrl(image)" alt="Image" class="uploaded-image" />
+            <!-- 이미지 제거 버튼 -->
+            <button
+              type="button"
+              class="btn btn-remove-image"
+              @click="removeImage(index)"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <b-modal
+        v-if="selectedImageIndex !== null"
+        @hide="selectedImageIndex = null"
+      >
+        <img
+          :src="imageFiles[selectedImageIndex].url"
+          alt="Selected Image"
+          @click="openImageModal(selectedImageIndex)"
+        />
+      </b-modal>
+
+      <b-button type="submit" variant="primary">등록</b-button>
+    </form>
+  </div>
+</template>
 <script>
 import axiosInstance from "@/api/axiosInstance";
 
 export default {
-    data() {
-        return {
-            formData: {
-                roomName: "",
-                address: "",
-                introduce: "",
-                pricePerNight: null,
-                sidoCode: 5,
-            },
-            imageFiles: [],
-        };
+  data() {
+    return {
+      formData: {
+        roomName: "",
+        address: "",
+        introduce: "",
+        pricePerNight: null,
+      },
+      imageFiles: [],
+      selectedImageIndex: null,
+    };
+  },
+  computed: {
+    formattedAddress() {
+      // 주소의 특정 형식으로 포맷팅하여 보여줄 수 있음
+      return `${this.formData.address}`; // 예시: 시/도, 시/군/구, 도로명 주소 등
     },
-    computed: {
-        formattedAddress() {
-            // 주소의 특정 형식으로 포맷팅하여 보여줄 수 있음
-            return `${this.formData.address}`; // 예시: 시/도, 시/군/구, 도로명 주소 등
-        },
+  },
+  mounted() {
+    // Daum 우편번호 서비스 스크립트 로딩 대기
+    if (typeof daum === "undefined") {
+      setTimeout(this.openDaumPostcode, 1000); // 1초 후에 openDaumPostcode 메서드 호출
+    }
+  },
+  methods: {
+    submitForm() {
+      if (
+        !this.formData.roomName ||
+        !this.formData.address ||
+        !this.formData.introduce ||
+        !this.formData.pricePerNight ||
+        this.imageFiles.length == 0
+      ) {
+        alert("모든 요소가 입력되어야 합니다.");
+        return;
+      }
+      const roomCreateRequestDto = {
+        roomName: this.formData.roomName,
+        address: this.formData.address,
+        introduce: this.formData.introduce,
+        pricePerNight: this.formData.pricePerNight,
+      };
+
+      const json = JSON.stringify(roomCreateRequestDto);
+      const jsonBlob = new Blob([json], { type: "application/json" });
+
+      const formData = new FormData();
+      formData.append("roomCreateRequestDto", jsonBlob);
+
+      this.imageFiles.forEach((image) => {
+        formData.append("imageList", image, image.name);
+      });
+
+      axiosInstance
+        .post("/room/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          // 등록 성공 시, 처리 로직 추가
+          console.log("숙소 등록 성공:", response.data);
+          this.$router.push("/room/list");
+        })
+        .catch((error) => {
+          console.error("숙소 등록 실패:", error);
+        });
     },
-    mounted() {
-        // Daum 우편번호 서비스 스크립트 로딩 대기
-        if (typeof daum === "undefined") {
-            setTimeout(this.openDaumPostcode, 1000); // 1초 후에 openDaumPostcode 메서드 호출
-        }
+    openDaumPostcode() {
+      // Daum 우편번호 서비스 팝업을 열어서 주소를 선택하는 기능
+      const self = this;
+      new window.daum.Postcode({
+        oncomplete(data) {
+          // 주소 선택 완료 시 콜백 함수
+          self.formData.address = data.address; // 선택한 주소를 폼 데이터에 할당
+          // 나머지 필요한 주소 정보를 필드에 할당하는 로직 추가
+        },
+      }).open();
     },
-    methods: {
-        submitForm() {
-            const roomCreateRequestDto = {
-                roomName: this.formData.roomName,
-                address: this.formData.address,
-                introduce: this.formData.introduce,
-                pricePerNight: this.formData.pricePerNight,
-                sidoCode: this.formData.sidoCode,
-            };
-
-            const json = JSON.stringify(roomCreateRequestDto);
-            const jsonBlob = new Blob([json], { type: "application/json" });
-
-            const formData = new FormData();
-            formData.append("roomCreateRequestDto", jsonBlob);
-
-            this.imageFiles.forEach((image) => {
-                formData.append("imageList", image, image.name);
-            });
-
-            axiosInstance
-                .post("/room/", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                })
-                .then((response) => {
-                    // 등록 성공 시, 처리 로직 추가
-                    console.log("숙소 등록 성공:", response.data);
-                    this.$router.push("/room/list");
-                })
-                .catch((error) => {
-                    console.error("숙소 등록 실패:", error);
-                });
-        },
-        handleImageUpload(event) {
-            // 이미지 파일 업로드 처리
-            this.imageFiles = Array.from(event.target.files);
-        },
-        openDaumPostcode() {
-            // Daum 우편번호 서비스 팝업을 열어서 주소를 선택하는 기능
-            const self = this;
-            new window.daum.Postcode({
-                oncomplete(data) {
-                    // 주소 선택 완료 시 콜백 함수
-                    self.formData.address = data.address; // 선택한 주소를 폼 데이터에 할당
-                    // 나머지 필요한 주소 정보를 필드에 할당하는 로직 추가
-                },
-            }).open();
-        },
+    // 이미지 모달 열기
+    openImageModal(index) {
+      this.selectedImageIndex = index;
     },
+    handleImageUpload(event) {
+      this.imageFiles = [...this.imageFiles, ...Array.from(event.target.files)];
+    },
+    removeImage(index) {
+      this.imageFiles.splice(index, 1);
+    },
+    getImageUrl(image) {
+      return URL.createObjectURL(image);
+    },
+  },
 };
 </script>
 
 <style scoped>
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input-group > * {
+  margin-right: 10px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.image-item {
+  position: relative;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.uploaded-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.btn-remove-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
 }
 </style>

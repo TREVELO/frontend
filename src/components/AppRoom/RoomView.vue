@@ -28,7 +28,7 @@
       <!-- 오른쪽 영역 - 숙소 정보 -->
       <div class="col-md-4">
         <h2>{{ roomName }}</h2>
-        <p>가격: {{ pricePerNight }}</p>
+        <p>₩{{ pricePerNight }}/박</p>
         <p>주소: {{ address }}</p>
         <p>설명: {{ introduce }}</p>
 
@@ -48,15 +48,15 @@
         <button class="btn btn-primary" @click="makeReservation">
           예약하기
         </button>
-                                  <div class="signup-section model-footer" style="text-align: center;">
-                        <p v-if="errorshow">
-                        <ul id="errorMsg">
-                            <li v-for="error in errors" :key="error">
-                                <b>{{ error }}</b>
-                            </li>
-                        </ul>
-                        </p>
-                    </div>
+            <div class="signup-section model-footer" style="text-align: center;">
+                <p v-if="errorshow">
+                    <ul id="errorMsg">
+                        <li v-for="error in errors" :key="error">
+                            <b>{{ error }}</b>
+                        </li>
+                    </ul>
+                </p>
+            </div>
       </div>
     </div>
 

@@ -7,7 +7,9 @@
             <img :src="room.picture" class="card-img-top" alt="Room Picture" />
             <div class="card-body">
               <h5 class="card-title">{{ room.roomName }}</h5>
-              <p class="card-text">가격: {{ room.pricePerNight }}</p>
+              <p class="card-text">
+                <b>₩{{ room.pricePerNight }}/박</b>
+              </p>
               <p class="card-text">주소: {{ room.address }}</p>
             </div>
           </div>
