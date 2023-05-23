@@ -45,8 +45,7 @@ export default {
           roomName: room.roomName,
           address: room.address,
           pricePerNight: room.pricePerNight,
-          picture:
-            "https://ssafyfinal.s3.ap-northeast-2.amazonaws.com/356511fd-c244-4110-9386-f8febc80571a.jpg", // 첫 번째 사진 URL을 사용합니다.
+          picture: room.picture,
         }));
       })
       .catch((error) => {
