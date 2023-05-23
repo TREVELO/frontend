@@ -10,6 +10,7 @@
         현재 위치 기반 추천 장소 찾기
       </button>
       <div v-else>
+        <attraction-modal v-if="isModal" @close="isModal = false"></attraction-modal>
         <div style="margin-top: 30px;"><b style="color: blue; font-size: 25px;">추천 관광지</b><button class="btn btn-primary"
             style="margin-left: 10px; border: none;" @click="makeRandom(nearAttractions, showAttractions)">새로
             보기</button></div>
@@ -20,6 +21,7 @@
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
+              <button class="btn btn-outline-dark">상세 보기</button>
             </div>
           </div>
         </div>
@@ -34,6 +36,7 @@
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
+              <button class="btn btn-outline-dark">상세 보기</button>
             </div>
           </div>
         </div>
@@ -49,6 +52,7 @@
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
+              <button class="btn btn-outline-dark" @click="isModal = true">상세 보기</button>
             </div>
           </div>
         </div>
@@ -61,12 +65,14 @@
 import axiosInstance from "@/api/axiosInstance";
 import MainHeader from "@/components/Main-Header.vue";
 import SubHeader from "@/components/Sub-Header.vue";
+import AttractionModal from "@/components/AttractionModal.vue";
 
 export default {
   name: 'AppHome',
   components: {
     'main-header': MainHeader,
     'sub-header': SubHeader,
+    AttractionModal,
   },
   data() {
     return {

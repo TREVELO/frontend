@@ -115,9 +115,20 @@ export default {
       } else if (searchbox.sentence == "") {
         alert("검색어를 입력해주세요!!")
       } else {
-        this.$router.push({ name: 'MapMap', params: { subject: searchbox.subject, sentence: searchbox.sentence } });
-      }
+        console.log(this.$route.path)
+        if (this.$route.path === '/map/Map') {
+          console.log("A")
+          this.$route.params.subject = searchbox.subject;
+          this.$route.params.sentence = searchbox.sentence;
+          this.$emit('mark');
+        } else {
+          console.log("B")
+          this.$router.push({ name: 'MapMap', params: { subject: searchbox.subject, sentence: searchbox.sentence } })
+            .catch(() => {
 
+            });
+        }
+      }
     }
 
   },

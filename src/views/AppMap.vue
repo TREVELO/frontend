@@ -1,11 +1,11 @@
 <template>
     <div class="home">
         <div id="header">
-            <main-header />
+            <main-header @mark="fetchData()" />
             <sub-header></sub-header>
         </div>
         <b>Map창</b>
-        <router-view></router-view>
+        <router-view :key="$route.params" ref="MapMap"></router-view>
     </div>
 </template>
 
@@ -18,6 +18,13 @@ export default {
     components: {
         'main-header': MainHeader,
         'sub-header': SubHeader,
+    },
+    methods: {
+        fetchData() {
+            this.$nextTick(() => {
+                this.$refs.MapMap.fetchData()
+            })
+        }
     }
 }
 </script>

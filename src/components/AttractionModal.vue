@@ -13,7 +13,10 @@
                     <div class="modal-body">
                         <slot name="body">
                             <div class="form-group">
-                                <img :src="attraction.first_image" alt="" height="300px" width="300px" />
+                                <img :src="attraction.first_image" alt="" height="300px" width="300px"
+                                    v-if="attraction.first_image" />
+                                <img src="https://williesweeneewagon.com/wp-content/plugins/clover-online-orders/public/img/noImg.png"
+                                    alt="" v-else>
                             </div>
                             <div class="form-group">
                                 <b>이름 : {{ attraction.title }}</b>
