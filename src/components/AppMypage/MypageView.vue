@@ -115,6 +115,15 @@ export default {
                 console.log(this.tossPaymentsResponseDto);
 
                 this.openPaymentWindow();
+
+                try {
+                    this.userinfo = this.$store.dispatch("memberStore/fetchUserinfo");
+                } catch (err) {
+                    console.log(err);
+                }
+
+                this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+
                 console.log("openPaymentWindow() 종료");
             } catch (error) {
                 console.log(error);
