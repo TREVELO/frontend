@@ -35,9 +35,9 @@ nav a.router-link-exact-active {
 
 * {
   /* font-family: 'Noto Sans KR', sans-serif; */
-  font-family: "NanumSquareNeo-Variable";
+  font-family: "NanumSquareNeo";
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap");
-@import url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2");
+@import url("https://webfontworld.github.io/NanumSquareNeo/NanumSquareNeo.css");
 </style>
