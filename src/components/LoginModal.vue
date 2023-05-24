@@ -56,8 +56,12 @@
                             회원이 아니신가요? <a href="#a" class="text-info"> 회원 가입</a>.
                         </div>
 
-                        <div class="signup-section model-footer" style="text-align: center">
-                            아이디를 잊으셨나요? <a href="#a" class="text-info"> 아이디 찾기</a>.
+                        <div
+                            class="signup-section model-footer"
+                            style="text-align: center"
+                            @click="showLoginIdFind"
+                        >
+                            아이디를 잊으셨나요? <span class="findRequest"> 아이디 찾기</span>.
                         </div>
 
                         <div
@@ -67,6 +71,68 @@
                         >
                             비밀번호를 잊으셨나요?
                             <span class="findRequest"> 비밀번호 찾기</span>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+
+        <!-- 아이디 찾기 모달 -->
+        <transition name="modal">
+            <div v-if="loginIdFindModalVisible" class="modal-mask">
+                <div class="modal-wrapper">
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <h3 slot="header">아이디 찾기</h3>
+                            <button class="modal-default-button" @click="closefindLoginModal">
+                                X
+                            </button>
+                        </div>
+                        <!-- 아이디 찾기 모달 내용 -->
+                        <form @submit.prevent="findLoginId">
+                            <div class="form-group">
+                                <input
+                                    type="hidden"
+                                    v-model="informationFindRequestDto.loginId"
+                                    class="form-control"
+                                    id="loginId"
+                                    placeholder="Your login id..."
+                                />
+                            </div>
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    v-model="informationFindRequestDto.email"
+                                    class="form-control"
+                                    id="email"
+                                    placeholder="Your email..."
+                                />
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-info btn-block btn-round">
+                                    아이디 찾기
+                                </button>
+                            </div>
+                        </form>
+                        <br />
+                        <div class="signup-section model-footer">
+                            <div v-if="findInformationShow">
+                                <ul id="errorMsg">
+                                    <li
+                                        v-for="result in findInformationArr"
+                                        :key="result"
+                                        style="text-align: center"
+                                    >
+                                        <b>{{ result }}</b>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="modal-default-button" @click="closefindLoginModal">
+                                닫기
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -232,6 +298,35 @@ export default {
             this.passwordResetModalVisible = true;
             this.loginIdFindModalVisible = false;
         },
+        showLoginIdFind() {
+            this.defaultLoginModalVisible = false;
+            this.passwordResetModalVisible = false;
+            this.loginIdFindModalVisible = true;
+        },
+        async findLoginId() {
+            if (!this.informationFindRequestDto.email) {
+                alert("이메일은 필수 입력 사항입니다.");
+                return;
+            }
+
+            await axios
+                .post("http://localhost/api/v1/member/find/id", this.informationFindRequestDto)
+                .then((response) => {
+                    this.findInformationArr.push(response.data);
+                    if (!this.findInformationShow) {
+                        this.findInformationShow = true;
+                    }
+                    console.log(response.data);
+                })
+                .catch((err) => {
+                    this.findInformationArr = [];
+                    this.findInformationArr.push(err.response.data);
+                    if (!this.findInformationShow) {
+                        this.findInformationShow = true;
+                    }
+                    console.log(err.response.data);
+                });
+        },
         async findPassword() {
             if (!this.informationFindRequestDto.email) {
                 alert("이메일은 필수 입력 사항입니다.");
@@ -266,6 +361,10 @@ export default {
         },
         closePasswordModal() {
             this.passwordResetModalVisible = false;
+            this.$emit("close");
+        },
+        closefindLoginModal() {
+            this.loginIdFindModalVisible = false;
             this.$emit("close");
         },
     },
