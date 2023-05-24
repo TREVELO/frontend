@@ -44,7 +44,7 @@
           <b-datepicker
             v-model="checkOutDate"
             class="form-control"
-            :disabled-dates="disabledDates"
+            :date-disabled-fn="disabledDates"
           ></b-datepicker>
         </b-form-group>
         <button class="btn btn-primary" @click="makeReservation">
