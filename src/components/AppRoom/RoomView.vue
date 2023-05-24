@@ -170,6 +170,7 @@ export default {
     },
     makeReservation() {
       // 예약 생성 로직
+      console.log(this.checkOutDate - this.checkInDate);
       if (!this.checkInDate) {
         alert("체크인 날짜를 선택해주세요.");
         return;
