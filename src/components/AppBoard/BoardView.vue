@@ -34,7 +34,7 @@
         <div style="display: flex; justify-content: space-between;">
           <p style="text-align: left; font-size: 35px;">{{ article.title }}</p>
           <p style="text-align: right; vertical-align: middle;" v-if="!article.updatedat">{{ article.createdat }}</p>
-          <p style="text-align: right; vertical-align: middle;" v-else>{{ article.updatedat }}</p>
+          <p style="text-align: right; vertical-align: middle;" v-else>수정됨 {{ article.updatedat }}</p>
         </div>
       </div>
 
@@ -43,10 +43,10 @@
       </div>
 
       <div style="margin-top: 30px; text-align: left; margin-bottom: 100px;">
-        총 {{ comments.length }}의 댓글이 있습니다.
+        총 {{ comments.length }}개의 댓글이 있습니다.
         <div style="margin-top: 20px;">
-          <textarea style="width: 100%; height: 120px; border-radius: 8px;" v-model="newComment.content"
-            placeholder="댓글을 작성하세요"></textarea>
+          <textarea style="padding-left: 10px; padding-right: 10px; width: 100%; height: 120px; border-radius: 8px;"
+            v-model="newComment.content" placeholder="댓글을 작성하세요"></textarea>
           <div style="text-align: right;">
             <button class="btn btn-outline-dark" @click="registerComment">댓글 등록</button>
           </div>
@@ -54,17 +54,41 @@
       </div>
       <div v-for="(comment) in comments" :key="comment.id"
         style="margin-top: 30px; height: auto; border-bottom: 1px solid;">
-        <div style="text-align: left;">
-          {{ comment.content }}
-        </div>
-        <div style="text-align: right;">
-          <button class="btn btn-outline-info" v-if="comment.memberId === userinfo.id">수정</button>
-          <button class="btn btn-outline-danger" @click="deleteComment(comment)"
-            v-if="comment.memberId === userinfo.id">삭제</button>
-          <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat }}
+
+        <div v-if="isModify[comment.commentId] === false || isModify[comment.commentId] === undefined">
+          <div style="text-align: left;">
+            {{ comment.content }}
           </div>
-          <div class="comment-date" v-else>수정됨 {{ comment.updatedat }}</div>
+          <div style="text-align: right;">
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-right: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-pen" @click="moveModify(comment)" /></button>
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-left: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-trash"
+                @click="deleteComment(comment)" /></button>
+            <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat
+            }}
+            </div>
+            <div class="comment-date" v-else>수정됨 {{ comment.updatedat }}</div>
+          </div>
         </div>
+
+        <div v-else>
+          <textarea style="text-align: left; width: 100%; height: 100px; border-radius: 8px;"
+            v-model="mContent"></textarea>
+          <div style="text-align: right;">
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-right: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-check"
+                @click="modifyComment(comment)" /></button>
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-left: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-xmark"
+                @click="cancelModify(comment)" /></button>
+            <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat
+            }}
+            </div>
+            <div class="comment-date" v-else>수정됨 {{ comment.updatedat }}</div>
+          </div>
+        </div>
+
       </div>
 
 
@@ -89,6 +113,8 @@ export default {
       newComment: {
 
       },
+      mContent: null,
+      isModify: [],
     };
   },
   computed: {
@@ -186,12 +212,39 @@ export default {
       if (confirm("댓글 삭제??")) {
         try {
           await axiosInstance.delete('http://localhost/api/v1/comment/delete/' + data.commentId);
-
           await this.commentList();
+          this.isModify[data.commentId] = false;
         } catch (error) {
           console.log(error)
         }
       }
+    },
+    moveModify(data) {
+      this.$set(this.isModify, data.commentId, true);
+
+      console.log(this.isModify[data.commentId])
+      console.log(this.isModify)
+    },
+    cancelModify(data) {
+      this.$set(this.isModify, data.commentId, false);
+      this.mContent = null;
+    },
+    async modifyComment(data) {
+      data.content = this.mContent;
+
+      console.log(data)
+      data.createdat = "";
+
+      if (confirm("댓글 수정??") && data.content !== null) {
+        try {
+          await axiosInstance.put('http://localhost/api/v1/comment/update', data)
+          await this.commentList();
+          this.$set(this.isModify, data.commentId, false);
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
     }
   },
   // filters: {
