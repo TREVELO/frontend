@@ -68,13 +68,14 @@
             <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat
             }}
             </div>
-            <div class="comment-date" v-else>수정됨 {{ comment.updatedat }}</div>
+            <div class="comment-date" v-else style="margin-bottom: 30px;">수정됨 {{ comment.updatedat }}</div>
           </div>
         </div>
 
         <div v-else>
-          <textarea style="text-align: left; width: 100%; height: 100px; border-radius: 8px;"
-            v-model="mContent"></textarea>
+          <textarea
+            style="text-align: left; width: 100%; height: 100px; border-radius: 8px; padding-left: 10px; padding-right: 10px;"
+            v-model="mContent" :placeholder="comment.content"></textarea>
           <div style="text-align: right;">
             <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-right: 5px;"
                 v-if="comment.memberId === userinfo.id" icon="fa-solid fa-check"
@@ -85,7 +86,7 @@
             <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat
             }}
             </div>
-            <div class="comment-date" v-else>수정됨 {{ comment.updatedat }}</div>
+            <div class="comment-date" v-else style="margin-bottom: 30px;">수정됨 {{ comment.updatedat }}</div>
           </div>
         </div>
 
@@ -235,15 +236,22 @@ export default {
       console.log(data)
       data.createdat = "";
 
-      if (confirm("댓글 수정??") && data.content !== null) {
-        try {
-          await axiosInstance.put('http://localhost/api/v1/comment/update', data)
-          await this.commentList();
-          this.$set(this.isModify, data.commentId, false);
-        } catch (error) {
-          console.log(error)
+      console.log(data.content == null)
+
+      if (data.content == null) {
+        alert("내용을 입력해주세요.")
+      } else {
+        if (confirm("댓글 수정??")) {
+          try {
+            await axiosInstance.put('http://localhost/api/v1/comment/update', data)
+            await this.commentList();
+            this.$set(this.isModify, data.commentId, false);
+          } catch (error) {
+            console.log(error)
+          }
         }
       }
+
 
     }
   },
