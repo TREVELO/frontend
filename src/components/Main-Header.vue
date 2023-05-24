@@ -21,11 +21,11 @@
     <!-- <img src="../assets/Image Pasted at 2023-5-15 16-35.png" alt=""> -->
     <div id="searchBox">
       <label style="display: inline-block; margin-left: 10px;">
-        <select v-model="searchbox.subject">
+        <b-form-select v-model="searchbox.subject" style="width: 130px;">
           <option v-for="(item, index) in this.searchbox.subjectList" :key="index" :value="item.value">
             {{ item.name }}
           </option>
-        </select>
+        </b-form-select>
         <input type="text" id="searchWord" placeholder="검색어를 입력해주세요." required
           style="background-color: white; font-family: 'Open Sans', sans-serif; padding-left: 9.5em;"
           v-model="searchbox.sentence">
