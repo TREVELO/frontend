@@ -14,13 +14,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        v-for="reservation in reservationList"
-                        :key="reservation.id"
-                        @click="goToRoomDetail(reservation.roomId)"
-                    >
+                    <tr v-for="reservation in reservationList" :key="reservation.id">
                         <td>{{ reservation.id }}</td>
-                        <td class="roomNameHover">{{ reservation.roomName }}</td>
+                        <td class="roomNameHover" @click="goToRoomDetail(reservation.roomId)">
+                            {{ reservation.roomName }}
+                        </td>
                         <td>{{ reservation.totalPrice }}</td>
                         <td>{{ reservation.checkInDate }}</td>
                         <td>{{ reservation.checkOutDate }}</td>

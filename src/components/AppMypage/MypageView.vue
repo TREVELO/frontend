@@ -80,7 +80,14 @@ export default {
         };
     },
     created() {
+        try {
+            this.userinfo = this.$store.dispatch("memberStore/fetchUserinfo");
+        } catch (err) {
+            console.log(err);
+        }
+
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+
         this.tossPaymentsRequestDto = {
             amount: "",
             memberId: this.userinfo.id,
@@ -108,7 +115,7 @@ export default {
                 console.log(this.tossPaymentsResponseDto);
 
                 this.openPaymentWindow();
-                console.log("호출");
+                console.log("openPaymentWindow() 종료");
             } catch (error) {
                 console.log(error);
             }
@@ -134,14 +141,6 @@ export default {
                             // customerName: this.userinfo.name,
                             // successUrl: "http://localhost/api/v1/payment/success",
                             // failUrl: "http://localhost/api/v1/payment/fail",
-                        })
-                        .then((response) => {
-                            // 백엔드에서 리턴한 result 값 활용
-                            const result = response.data;
-                            console.log(result);
-                            // 원하는 처리 로직 수행
-                            // 예시: MyPageView 라우터로 이동
-                            this.$router.push({ name: "MyPageView" }).catch(() => {});
                         })
                         .catch(function (error) {
                             if (error.code === "USER_CANCEL") {

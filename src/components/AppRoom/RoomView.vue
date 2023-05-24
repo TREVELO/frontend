@@ -29,8 +29,8 @@
       <div class="col-md-4">
         <h2>{{ roomName }}</h2>
         <p>₩{{ pricePerNight }}/박</p>
-        <p>주소: {{ address }}</p>
-        <p>설명: {{ introduce }}</p>
+        <p>{{ address }}</p>
+        <p>{{ introduce }}</p>
 
         <!-- 달력 컴포넌트 -->
         <b-form-group label="체크인">

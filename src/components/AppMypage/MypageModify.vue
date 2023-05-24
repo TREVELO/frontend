@@ -132,12 +132,19 @@ export default {
                     .then((response) => {
                         console.log(response.data);
                         alert("정보가 수정되었습니다.");
+
+                        // 변경된 정보를 가져오기 위해 fetchUserinfo 액션 호출
+                        this.$store.dispatch("memberStore/fetchUserinfo").then(() => {
+                            // 변경된 정보로 userinfo 업데이트
+                            this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+                            // 페이지 이동
+                            this.$router.push({ path: "/mypage" });
+                        });
                     })
                     .catch((err) => {
                         console.log(err.response.data);
                         alert(err.response.data);
                     });
-                this.$router.push({ path: "/mypage" });
             }
         },
     },
