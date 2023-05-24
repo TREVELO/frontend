@@ -37,26 +37,28 @@
           <b-datepicker
             v-model="checkInDate"
             class="form-control"
+            :date-disabled-fn="disabledDates"
           ></b-datepicker>
         </b-form-group>
         <b-form-group label="체크아웃">
           <b-datepicker
             v-model="checkOutDate"
             class="form-control"
+            :disabled-dates="disabledDates"
           ></b-datepicker>
         </b-form-group>
         <button class="btn btn-primary" @click="makeReservation">
           예약하기
         </button>
-            <div class="signup-section model-footer" style="text-align: center;">
-                <p v-if="errorshow">
+        <div class="signup-section model-footer" style="text-align: center">
+          <pre v-if="errorshow">
                     <ul id="errorMsg">
                         <li v-for="error in errors" :key="error">
                             <b>{{ error }}</b>
                         </li>
                     </ul>
-                </p>
-            </div>
+                </pre>
+        </div>
       </div>
     </div>
 
@@ -101,12 +103,16 @@ export default {
       ownerId: "",
       userinfo: [],
       isOwner: false,
-                  errors: [],
-            errorshow: false,
+      errors: [],
+      errorshow: false,
+      reservedDates: [], // 예약된 날짜 목록
+      checkInDate: new Date().toISOString().substr(0, 10),
+      checkOutDate: new Date().toISOString().substr(0, 10),
     };
   },
   computed: {
     ...mapGetters("memberStore", ["getUserinfo"]),
+    // 예약된 날짜를 비활성화할 함수
   },
   created() {
     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
@@ -115,6 +121,7 @@ export default {
 
     // roomId를 이용하여 숙소 정보를 가져옴
     this.fetchRoomData(this.roomId);
+    this.fetchReservedDates(this.roomId);
   },
   methods: {
     // 사진 선택 시 호출되는 메서드
@@ -148,8 +155,7 @@ export default {
         });
     },
     deleteRoom() {
-
-        confirm("정말 삭제하시겠습니까?");
+      confirm("정말 삭제하시겠습니까?");
       const roomId = this.$route.params.roomId;
 
       axiosInstance
@@ -192,7 +198,9 @@ export default {
         return;
       }
 
-        confirm(`${this.checkInDate} 부터 ${this.checkOutDate} 까지 예약하시겠습니까? 총 숙박 금액의 10%가 예약금으로 결제 될 것입니다.`);
+      confirm(
+        `${this.checkInDate} 부터 ${this.checkOutDate} 까지 예약하시겠습니까? 총 숙박 금액의 10%가 예약금으로 결제 될 것입니다.`
+      );
       const reservationData = {
         roomId: this.roomId,
         customerId: this.userinfo.id,
@@ -200,25 +208,45 @@ export default {
         checkOutDate: this.checkOutDate,
       };
       console.log(reservationData);
-      axiosInstance.post(`/reservation/${this.roomId}`, reservationData)
-      .then((response) => {
-        console.log(response.data);
-        alert("예약이 완료되었습니다.");
-        this.$router.push({ name: 'ReservationList'});
-      }).catch((error) => {
-        console.log(error.response.data);
-        this.errors = [];
-        this.errors.push(error.response.data);
-        alert(this.errors);
-        if (!this.errorshow) {
+      axiosInstance
+        .post(`/reservation/${this.roomId}`, reservationData)
+        .then((response) => {
+          console.log(response.data);
+          alert("예약이 완료되었습니다.");
+          this.$router.push({ name: "ReservationList" });
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          this.errors = [];
+          this.errors.push(error.response.data);
+          alert(this.errors);
+          if (!this.errorshow) {
             this.errorshow = true;
-        }
-      })
+          }
+        });
     },
     goToModifyPage() {
-        var roomId = this.roomId;
-    this.$router.push({ name: 'roomModify', params: { roomId } });
-  },
+      var roomId = this.roomId;
+      this.$router.push({ name: "roomModify", params: { roomId } });
+    },
+    // 예약된 날짜 조회 API 호출
+    fetchReservedDates(roomId) {
+      axiosInstance
+        .get(`/reservation/date/${roomId}`)
+        .then((response) => {
+          this.reservedDates = response.data.map(
+            (item) => item.reservationDate
+          );
+          console.log(this.reservedDates);
+        })
+        .catch((error) => {
+          console.error("Error fetching reserved dates:", error);
+        });
+    },
+    disabledDates(ymd, date) {
+      const formattedDate = moment(date).format("YYYY-MM-DD");
+      return this.reservedDates.includes(formattedDate);
+    },
   },
 };
 </script>
@@ -241,8 +269,8 @@ export default {
 }
 
 #errorMsg {
-    color: crimson;
-    font-size: 13px;
-    list-style: none;
+  color: crimson;
+  font-size: 13px;
+  list-style: none;
 }
 </style>
