@@ -80,6 +80,19 @@ const routes = [
         component : () => import("@/components/AppFavorite/FavoriteList")
       }
     ]
+  },
+  {
+    path : "/plan",
+    name : "plan",
+    component : () => import("@/views/AppPlan"),
+    redirect : "/plan/list",
+    children :[
+      {
+        path : "list",
+        name : "PlanList",
+        component : () => import("@/components/AppPlan/PlanList")
+      }
+    ]
   }
 ]
 
