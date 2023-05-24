@@ -33,8 +33,9 @@
                     <td>마일리지</td>
                     <td>
                         {{ userinfo.mileage }} 원
-                        <input v-model="amount" />
-                        <button class="btn btn-outline-secondary btn-sm" @click="requestValidation" style="margin: auto">
+                        <input v-model="amount" style="vertical-align: middle;" />
+                        <button style="vertical-align: middle; margin: 0 auto;" class="btn btn-outline-secondary btn-sm"
+                            @click="requestValidation">
                             충전
                         </button>
                     </td>
