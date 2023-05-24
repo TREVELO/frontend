@@ -28,33 +28,16 @@
             <td>{{ reservation.createdat }}</td>
             <td>
               <div v-if="reservation.isPaid">
+                <b> 결제 완료 </b>
                 <a
                   class="reservationCancel"
                   @click="cancelReservation(reservation.id)"
                 >
-                  취소
-                </a>
-                <a
-                  class="reservationPayment"
-                  @click="processPayment(reservation.id)"
-                >
-                  결제
-                </a>
-                <a
-                  class="reservationPayment"
-                  @click="processPayment(reservation.id)"
-                >
-                  마일리지
+                  결제취소
                 </a>
               </div>
               <div v-else>
                 <a
-                  class="reservationCancel"
-                  @click="cancelReservation(reservation.id)"
-                >
-                  취소
-                </a>
-                <a
                   class="reservationPayment"
                   @click="processPayment(reservation.id)"
                 >
@@ -65,6 +48,12 @@
                   @click="processPayment(reservation.id)"
                 >
                   마일리지
+                </a>
+                <a
+                  class="reservationCancel"
+                  @click="cancelReservation(reservation.id)"
+                >
+                  예약취소
                 </a>
               </div>
             </td>
@@ -106,7 +95,9 @@ export default {
         });
     },
     cancelReservation(reservationId) {
-      confirm("예약을 취소하시겠습니까?");
+      if (!confirm("예약을 취소하시겠습니까?")) {
+        return;
+      }
       axiosInstance
         .delete(`/reservation/${reservationId}`)
         .then((response) => {
@@ -117,13 +108,36 @@ export default {
           alert("취소가 완료되었습니다.");
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.response.data);
           alert(err.response.data);
         });
     },
-    // processPayment(reservationId) {
-    //     // 결제 처리 로직을 구현하세요.
-    // },
+    processPayment(reservationId) {
+      confirm(
+        "예약을 확정하시겠습니까? 총 금액의 90%가 마일리지에서 차감됩니다."
+      );
+      axiosInstance
+        .get(`/reservation/${reservationId}/confirm`)
+        .then((response) => {
+          console.log(response);
+          alert("예약 확정 되었습니다.");
+
+          // 결제 처리 후에 reservationList를 업데이트
+          this.reservationList = this.reservationList.map((reservation) => {
+            if (reservation.id === reservationId) {
+              return {
+                ...reservation,
+                isPaid: true,
+              };
+            }
+            return reservation;
+          });
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          alert(err.response.data);
+        });
+    },
     goToRoomDetail(roomId) {
       this.$router.push(`/room/view/${roomId}`);
     },

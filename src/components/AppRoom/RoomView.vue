@@ -204,6 +204,7 @@ export default {
       .then((response) => {
         console.log(response.data);
         alert("예약이 완료되었습니다.");
+        this.$router.push({ name: 'ReservationList'});
       }).catch((error) => {
         console.log(error.response.data);
         this.errors = [];
