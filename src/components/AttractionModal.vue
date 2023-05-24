@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container">
+                <div class="modal-container" style="border-radius: 24px;">
                     <div class="modal-header">
                         <h3 slot="header">관광지 정보</h3>
                         <button class="modal-default-button" @click="$emit('close')">
@@ -14,9 +14,9 @@
                         <slot name="body">
                             <div class="form-group">
                                 <img :src="attraction.first_image" alt="" height="300px" width="300px"
-                                    v-if="attraction.first_image" />
+                                    v-if="attraction.first_image" style="border-radius: 24px;" />
                                 <img src="https://williesweeneewagon.com/wp-content/plugins/clover-online-orders/public/img/noImg.png"
-                                    alt="" v-else>
+                                    alt="" v-else style="border-radius: 24px;">
                             </div>
                             <div class="form-group">
                                 <b>이름 : {{ attraction.title }}</b>

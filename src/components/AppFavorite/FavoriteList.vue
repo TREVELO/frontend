@@ -14,20 +14,22 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-table hover :items="favoriteList" :fields="fields">
-                        <template #cell(first_image)="data">
-                            <div class="cell-container">
-                                <div class="vertical-center">
-                                    <div v-html="data.value"></div>
+                    <div class="table-container">
+                        <b-table hover :items="favoriteList" :fields="fields">
+                            <template #cell(first_image)="data">
+                                <div class="cell-container">
+                                    <div class="vertical-center">
+                                        <div v-html="data.value"></div>
+                                    </div>
                                 </div>
-                            </div>
-                        </template>
-                        <template #cell(actions)="data">
-                            <b-button variant="danger" @click="deleteItem(data.item)">
-                                삭제
-                            </b-button>
-                        </template>
-                    </b-table>
+                            </template>
+                            <template #cell(actions)="data">
+                                <b-button variant="danger" @click="deleteItem(data.item)">
+                                    삭제
+                                </b-button>
+                            </template>
+                        </b-table>
+                    </div>
                 </b-col>
             </b-row>
         </b-container>
@@ -99,6 +101,13 @@ export default {
 .vertical-center {
     display: flex;
     align-items: center;
+}
+
+.table-container {
+    height: 700px;
+    /* Set a fixed height for the container */
+    overflow-y: auto;
+    /* Add vertical scroll if content exceeds the container height */
 }
 </style>
   

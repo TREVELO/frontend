@@ -1,7 +1,7 @@
 <template>
     <div>
         <b>MypageView화면</b>
-        <table class="table" style="margin-top: 30px;">
+        <table class="table" style="margin-top: 30px">
             <thead>
                 <tr>
                     <th>항목</th>
@@ -11,28 +11,78 @@
             <tbody class="table-group-divider">
                 <tr>
                     <td>이름</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.name" style="text-align: center;" readonly></td>
+                    <td>
+                        <input
+                            type="text"
+                            name=""
+                            id=""
+                            v-model="memberUpdateDto.name"
+                            style="text-align: center"
+                            readonly
+                        />
+                    </td>
                 </tr>
                 <tr>
                     <td>아이디</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.loginId" style="text-align: center;" readonly>
+                    <td>
+                        <input
+                            type="text"
+                            name=""
+                            id=""
+                            v-model="memberUpdateDto.loginId"
+                            style="text-align: center"
+                            readonly
+                        />
                     </td>
                 </tr>
                 <tr>
                     <td>비밀번호</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.password" style="text-align: center;"></td>
+                    <td>
+                        <input
+                            type="password"
+                            name=""
+                            id=""
+                            v-model="memberUpdateDto.loginPassword"
+                            style="text-align: center"
+                        />
+                    </td>
                 </tr>
                 <tr>
                     <td>이메일</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.email" style="text-align: center;"></td>
+                    <td>
+                        <input
+                            type="text"
+                            name=""
+                            id=""
+                            v-model="memberUpdateDto.email"
+                            style="text-align: center"
+                        />
+                    </td>
                 </tr>
                 <tr>
                     <td>회원등급</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.grade" style="text-align: center;" readonly></td>
+                    <td>
+                        <input
+                            type="text"
+                            name=""
+                            id=""
+                            v-model="userinfo.grade"
+                            style="text-align: center"
+                            readonly
+                        />
+                    </td>
                 </tr>
                 <tr>
                     <td>마일리지</td>
-                    <td><input type="text" name="" id="" v-model="userinfo.mileage" style="text-align: center;" readonly>
+                    <td>
+                        <input
+                            type="text"
+                            name=""
+                            id=""
+                            v-model="userinfo.mileage"
+                            style="text-align: center"
+                            readonly
+                        />
                     </td>
                 </tr>
             </tbody>
@@ -45,27 +95,60 @@
 </template>
 
 <script>
+import axiosInstance from "@/api/axiosInstance";
+
 export default {
     name: "MypageModify",
     data() {
         return {
             userinfo: [],
+            memberUpdateDto: {
+                loginId: "",
+                loginPassword: "",
+                name: "",
+                email: "",
+            },
         };
     },
     created() {
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-        console.log(this.userinfo)
+        console.log(this.userinfo);
+        this.memberUpdateDto.loginId = this.userinfo.loginId;
+        this.memberUpdateDto.name = this.userinfo.name;
+        this.memberUpdateDto.email = this.userinfo.email;
     },
     methods: {
-        memberModify(userinfo) {
-            if (confirm("회원 정보를 변경하시겠습니까??")) {
-                console.log(userinfo)
+        memberModify() {
+            if (!this.memberUpdateDto.loginPassword || !this.memberUpdateDto.email) {
+                alert("수정 할 항목을 작성해주세요.");
+                return;
+            }
 
-                this.$router.push({ path: '/mypage' })
+            if (confirm("회원 정보를 변경하시겠습니까?")) {
+                console.log(this.memberUpdateDto);
+
+                axiosInstance
+                    .put("/member/mypage", this.memberUpdateDto)
+                    .then((response) => {
+                        console.log(response.data);
+                        alert("정보가 수정되었습니다.");
+
+                        // 변경된 정보를 가져오기 위해 fetchUserinfo 액션 호출
+                        this.$store.dispatch("memberStore/fetchUserinfo").then(() => {
+                            // 변경된 정보로 userinfo 업데이트
+                            this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+                            // 페이지 이동
+                            this.$router.push({ path: "/mypage" });
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err.response.data);
+                        alert(err.response.data);
+                    });
             }
         },
-    }
-}
+    },
+};
 </script>
 
 <style scoped>

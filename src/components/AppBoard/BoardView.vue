@@ -20,18 +20,81 @@
             v-if="article.memberId === userinfo.id">글삭제</b-button>
         </b-col>
       </b-row>
-      <b-row class="mb-1">
-        <b-col>
+      <!-- <b-row class="mb-1"> -->
+      <!-- <b-col>
           <b-card
-            :header-html="`<h3>${article.boardId}.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
+            :header-html="`<h3>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ${article.title} [${article.hit}]</h3><div><h6>${article.content}</div><div>${article.createdat}</h6></div>`"
             class="mb-2" border-variant="dark" no-body>
-            <!-- <b-card-body class="text-left">
+            <b-card-body class="text-left">
             <div v-html="message"></div>
-          </b-card-body> -->
+          </b-card-body>
           </b-card>
-        </b-col>
-      </b-row>
+        </b-col> -->
+      <div style="margin-top: 30px; padding-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between;">
+          <p style="text-align: left; font-size: 35px;">{{ article.title }}</p>
+          <p style="text-align: right; vertical-align: middle;" v-if="!article.updatedat">{{ article.createdat }}</p>
+          <p style="text-align: right; vertical-align: middle;" v-else>수정됨 {{ article.updatedat }}</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 30px; border-bottom: solid 0.5px gray; padding-bottom: 15px;">
+        <p style="text-align: left; font-size: 20px;">{{ article.content }}</p>
+      </div>
+
+      <div style="margin-top: 30px; text-align: left; margin-bottom: 100px;">
+        총 {{ comments.length }}개의 댓글이 있습니다.
+        <div style="margin-top: 20px;">
+          <textarea style="padding-left: 10px; padding-right: 10px; width: 100%; height: 120px; border-radius: 8px;"
+            v-model="newComment.content" placeholder="댓글을 작성하세요"></textarea>
+          <div style="text-align: right;">
+            <button class="btn btn-outline-dark" @click="registerComment">댓글 등록</button>
+          </div>
+        </div>
+      </div>
+      <div v-for="(comment) in comments" :key="comment.id"
+        style="margin-top: 30px; height: auto; border-bottom: 1px solid;">
+
+        <div v-if="isModify[comment.commentId] === false || isModify[comment.commentId] === undefined">
+          <div style="text-align: left;">
+            {{ comment.content }}
+          </div>
+          <div style="text-align: right;">
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-right: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-pen" @click="moveModify(comment)" /></button>
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-left: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-trash"
+                @click="deleteComment(comment)" /></button>
+            <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat
+            }}
+            </div>
+            <div class="comment-date" v-else style="margin-bottom: 30px;">수정됨 {{ comment.updatedat }}</div>
+          </div>
+        </div>
+
+        <div v-else>
+          <textarea
+            style="text-align: left; width: 100%; height: 100px; border-radius: 8px; padding-left: 10px; padding-right: 10px;"
+            v-model="mContent" :placeholder="comment.content"></textarea>
+          <div style="text-align: right;">
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-right: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-check"
+                @click="modifyComment(comment)" /></button>
+            <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-left: 5px;"
+                v-if="comment.memberId === userinfo.id" icon="fa-solid fa-xmark"
+                @click="cancelModify(comment)" /></button>
+            <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat
+            }}
+            </div>
+            <div class="comment-date" v-else style="margin-bottom: 30px;">수정됨 {{ comment.updatedat }}</div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+      <!-- </b-row> -->
     </b-container>
   </div>
 </template>
@@ -47,6 +110,12 @@ export default {
     return {
       article: {},
       userinfo: [],
+      comments: [],
+      newComment: {
+
+      },
+      mContent: null,
+      isModify: [],
     };
   },
   computed: {
@@ -54,33 +123,8 @@ export default {
   },
   created() {
     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-    console.log(this.userinfo)
-    let param = this.$route.params.articleno;
-    console.log(param)
-    axiosInstance.get('http://localhost/api/v1/board/view/' + param)
-      .then(({ data }) => {
-        console.log(data)
-        if (data.updatedat !== null) {
-          data.createdat = data.updatedat;
-        }
-        let a = data.createdat.substring(0, 10);
-        let b = data.createdat.substring(11, data.createdat.length);
-        // console.log(a);
-        // console.log(b);
-        data.createdat = a + " " + b;
-        this.article = data;
-      })
-    console.log(this.userinfo)
-    // this.$store.dispatch('memberStore/fetchUserinfo')
-    //   .then(() => {
-    //     // 사용자 정보를 가져왔을 때 필요한 작업 수행
-    //     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-    //     console.log(this.userinfo);
-    //   })
-    //   .catch(error => {
-    //     // 오류 처리
-    //     console.error(error)
-    //   });
+    this.boardView();
+    this.commentList();
   },
   methods: {
     // ...mapActions("memberStore", ["decodeToken", "fetchUserinfo"]),
@@ -109,6 +153,107 @@ export default {
     moveList() {
       this.$router.push({ name: "BoardList" });
     },
+    async registerComment() {
+      this.newComment.boardId = this.article.boardId;
+
+      try {
+        await axiosInstance.post('http://localhost/api/v1/comment/write', this.newComment);
+        console.log("댓글 작성 성공");
+
+        await this.commentList();
+
+        this.newComment.content = "";
+      } catch (err) {
+        console.log(err)
+      }
+
+    },
+    boardView() {
+      let param = this.$route.params.articleno;
+      axiosInstance.get('http://localhost/api/v1/board/view/' + param)
+        .then(({ data }) => {
+          console.log(data)
+          if (data.updatedat !== null) {
+            let a = data.updatedat.substring(0, 10);
+            let b = data.updatedat.substring(11, data.updatedat.length);
+            data.updatedat = a + " " + b;
+          } else {
+            let a = data.createdat.substring(0, 10);
+            let b = data.createdat.substring(11, data.createdat.length);
+            data.createdat = a + " " + b;
+          }
+          this.article = data;
+        })
+    },
+    async commentList() {
+      let param = this.$route.params.articleno;
+      axiosInstance.get('http://localhost/api/v1/comment/getlist/' + param)
+        .then((res) => {
+          this.comments = res.data;
+
+          for (let index = 0; index < this.comments.length; index++) {
+            if (this.comments[index].updatedat !== null) {
+              let a = this.comments[index].updatedat.substring(0, 10);
+              let b = this.comments[index].updatedat.substring(11, this.comments[index].updatedat.length);
+              this.comments[index].updatedat = a + " " + b;
+            } else {
+              let a = this.comments[index].createdat.substring(0, 10);
+              let b = this.comments[index].createdat.substring(11, this.comments[index].createdat.length);
+              this.comments[index].createdat = a + " " + b;
+            }
+          }
+
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    async deleteComment(data) {
+
+      if (confirm("댓글 삭제??")) {
+        try {
+          await axiosInstance.delete('http://localhost/api/v1/comment/delete/' + data.commentId);
+          await this.commentList();
+          this.isModify[data.commentId] = false;
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+    moveModify(data) {
+      this.$set(this.isModify, data.commentId, true);
+
+      console.log(this.isModify[data.commentId])
+      console.log(this.isModify)
+    },
+    cancelModify(data) {
+      this.$set(this.isModify, data.commentId, false);
+      this.mContent = null;
+    },
+    async modifyComment(data) {
+      data.content = this.mContent;
+
+      console.log(data)
+      data.createdat = "";
+
+      console.log(data.content == null)
+
+      if (data.content == null) {
+        alert("내용을 입력해주세요.")
+      } else {
+        if (confirm("댓글 수정??")) {
+          try {
+            await axiosInstance.put('http://localhost/api/v1/comment/update', data)
+            await this.commentList();
+            this.$set(this.isModify, data.commentId, false);
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+
+
+    }
   },
   // filters: {
   //   dateFormat(regtime) {

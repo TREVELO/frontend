@@ -94,7 +94,7 @@ const routes = [
                 component: () => import("@/components/AppRoom/RoomList"),
             },
             {
-                path: "View",
+                path: "view",
                 name: "roomView",
                 component: () => import("@/components/AppRoom/RoomView"),
             },
@@ -102,6 +102,42 @@ const routes = [
                 path: "write",
                 name: "roomWrite",
                 component: () => import("@/components/AppRoom/RoomWrite"),
+            },
+            {
+                path: "modify",
+                name: "roomModify",
+                component: () => import("@/components/AppRoom/RoomModify"),
+            },
+            {
+                path: "/room/view/:roomId",
+                name: "roomView",
+                component: () => import("@/components/AppRoom/RoomView"),
+            },
+        ],
+    },
+    {
+        path: "/reservation",
+        name: "reservation",
+        component: () => import("@/views/AppReservation"),
+        redirect: "/reservation/list",
+        children: [
+            {
+                path: "list",
+                name: "ReservationList",
+                component: () => import("@/components/AppReservation/ReservationList"),
+            },
+        ],
+    },
+    {
+        path: "/plan",
+        name: "plan",
+        component: () => import("@/views/AppPlan"),
+        redirect: "/plan/list",
+        children: [
+            {
+                path: "list",
+                name: "PlanList",
+                component: () => import("@/components/AppPlan/PlanList"),
             },
         ],
     },

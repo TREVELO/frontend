@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>숙소 등록</h1>
+    <h1>숙소 수정</h1>
     <form @submit.prevent="submitForm">
       <b-form-group label="숙소 이름" label-for="roomName">
         <b-form-input
@@ -14,8 +14,7 @@
         <div class="input-group">
           <b-form-input
             id="address"
-            :value="formattedAddress"
-            disabled
+            v-model="formData.address"
             required
           ></b-form-input>
           <b-button variant="secondary" @click="openDaumPostcode">
@@ -57,7 +56,7 @@
             :key="index"
             class="image-item"
           >
-            <img :src="getImageUrl(image)" alt="Image" class="uploaded-image" />
+            <img :src="image.url" alt="Image" class="uploaded-image" />
             <!-- 이미지 제거 버튼 -->
             <button
               type="button"
@@ -81,10 +80,11 @@
         />
       </b-modal>
 
-      <b-button type="submit" variant="primary">등록</b-button>
+      <b-button type="submit" variant="primary">수정</b-button>
     </form>
   </div>
 </template>
+
 <script>
 import axiosInstance from "@/api/axiosInstance";
 
@@ -99,6 +99,7 @@ export default {
       },
       imageFiles: [],
       selectedImageIndex: null,
+      roomId: "",
     };
   },
   computed: {
@@ -113,6 +114,26 @@ export default {
       setTimeout(this.openDaumPostcode, 1000); // 1초 후에 openDaumPostcode 메서드 호출
     }
   },
+  created() {
+    // 수정할 숙소 정보를 백엔드 API로부터 가져옵니다.
+    this.roomId = this.$route.params.roomId;
+    axiosInstance
+      .get(`/room/${this.roomId}`)
+      .then((response) => {
+        const room = response.data;
+        this.formData.roomName = room.roomName;
+        this.formData.address = room.address;
+        this.formData.introduce = room.introduce;
+        this.formData.pricePerNight = room.pricePerNight;
+        this.imageFiles = room.roomPictures.map((url) => ({
+          url,
+          file: null,
+        }));
+      })
+      .catch((error) => {
+        console.error("숙소 정보를 가져오지 못했습니다:", error);
+      });
+  },
   methods: {
     submitForm() {
       if (
@@ -125,25 +146,27 @@ export default {
         alert("모든 요소가 입력되어야 합니다.");
         return;
       }
-      const roomCreateRequestDto = {
+      const roomUpdateRequestDto = {
         roomName: this.formData.roomName,
         address: this.formData.address,
         introduce: this.formData.introduce,
         pricePerNight: this.formData.pricePerNight,
       };
 
-      const json = JSON.stringify(roomCreateRequestDto);
+      const json = JSON.stringify(roomUpdateRequestDto);
       const jsonBlob = new Blob([json], { type: "application/json" });
 
       const formData = new FormData();
-      formData.append("roomCreateRequestDto", jsonBlob);
+      formData.append("roomUpdateRequestDto", jsonBlob);
 
       this.imageFiles.forEach((image) => {
-        formData.append("imageList", image, image.name);
+        if (image.file) {
+          formData.append("imageList", image.file, image.file.name);
+        }
       });
 
       axiosInstance
-        .post("/room/", formData, {
+        .put(`/room/${this.roomId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -168,18 +191,32 @@ export default {
         },
       }).open();
     },
-    // 이미지 모달 열기
+    // 이미지 관련 메소드들 추가
     openImageModal(index) {
       this.selectedImageIndex = index;
     },
     handleImageUpload(event) {
-      this.imageFiles = [...this.imageFiles, ...Array.from(event.target.files)];
+      const files = Array.from(event.target.files);
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const url = e.target.result;
+          this.imageFiles.push({
+            url,
+            file,
+          });
+        };
+        reader.readAsDataURL(file);
+      });
     },
     removeImage(index) {
       this.imageFiles.splice(index, 1);
     },
     getImageUrl(image) {
-      return URL.createObjectURL(image);
+      if (image.url) {
+        return image.url;
+      }
+      return URL.createObjectURL(image.file);
     },
   },
 };
