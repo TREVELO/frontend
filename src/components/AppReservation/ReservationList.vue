@@ -95,7 +95,7 @@ export default {
         });
     },
     cancelReservation(reservationId) {
-      if (!confirm("예약을 취소하시겠습니까?")) {
+      if (!confirm("취소하시겠습니까?")) {
         return;
       }
       axiosInstance
@@ -113,9 +113,14 @@ export default {
         });
     },
     processPayment(reservationId) {
-      confirm(
-        "예약을 확정하시겠습니까? 총 금액의 90%가 마일리지에서 차감됩니다."
-      );
+      if (
+        !confirm(
+          "예약을 확정하시겠습니까? 총 금액의 90%가 마일리지에서 차감됩니다."
+        )
+      ) {
+        return;
+      }
+
       axiosInstance
         .get(`/reservation/${reservationId}/confirm`)
         .then((response) => {
