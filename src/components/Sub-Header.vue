@@ -64,7 +64,11 @@
             </li>
 
             <li>
-                <button class="btn-btn"><b>나의 예약내역</b></button>
+                <button>
+                    <router-link :to="{ name: 'reservation' }">
+                        <b>나의 예약내역</b>
+                    </router-link>
+                </button>
             </li>
         </ul>
     </div>
