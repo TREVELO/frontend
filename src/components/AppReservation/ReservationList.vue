@@ -81,6 +81,12 @@ export default {
   created() {
     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
     console.log(this.userinfo.email);
+    this.tossPaymentsRequestDto = {
+      amount: "",
+      memberId: this.userinfo.id,
+      customerEmail: this.userinfo.email,
+      customerName: this.userinfo.name,
+    };
     this.fetchReservations();
   },
   methods: {
