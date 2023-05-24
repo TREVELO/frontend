@@ -43,13 +43,20 @@
 
       <div class="form-group">
         <label for="imageUpload">사진 업로드</label>
-        <input
-          type="file"
-          id="imageUpload"
-          accept="image/*"
-          multiple
-          @change="handleImageUpload"
-        />
+        <div class="image-upload">
+          <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            multiple
+            @change="handleImageUpload"
+            style="display: none"
+          />
+          <label for="imageUpload" class="upload-button">
+            <i class="fas fa-upload"></i>
+            <span>사진 선택</span>
+          </label>
+        </div>
         <!-- 이미지 목록 출력 -->
         <div class="image-list">
           <div
@@ -187,22 +194,42 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 600px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.input-group {
-  display: flex;
-  align-items: center;
-}
-
-.input-group > * {
-  margin-right: 10px;
-}
-
 .form-group {
   margin-bottom: 20px;
+}
+
+.image-upload {
+  position: relative;
+}
+
+.upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  background-color: #f2f2f2;
+}
+
+.upload-button i {
+  font-size: 48px;
+  color: #ccc;
+}
+
+.upload-button span {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #666;
 }
 
 .image-list {
