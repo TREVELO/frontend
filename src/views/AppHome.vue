@@ -16,9 +16,11 @@
             고침</button>
         </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;"
+          <div class="card"
+            style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle; border-radius: 24px;"
             v-for="(show, index) in showAttractions" :key="show.contentId">
-            <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
+            <img :src="show.first_image" class="" alt=""
+              style="margin-top: 30px; width: 200px; height: 200px; border-radius: 24px">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
@@ -33,9 +35,11 @@
             고침</button>
         </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;"
+          <div class="card"
+            style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;border-radius: 24px;"
             v-for="(show, index) in showShopping" :key="show.contentId">
-            <img :src="show.first_image" class="" alt="" style="margin-top: 30px; width: 200px; height: 200px;">
+            <img :src="show.first_image" class="" alt=""
+              style="margin-top: 30px; width: 200px; height: 200px;border-radius: 24px;">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>
@@ -50,10 +54,11 @@
             고침</button>
         </div>
         <div style="margin-top: 50px;">
-          <div class="card" style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle;"
+          <div class="card"
+            style="width: 20rem; height: 25rem; display: inline-block; vertical-align: middle; border-radius: 24px;"
             v-for="(show, index) in showRestaurant" :key="show.contentId">
             <img @click="isModal = true" :src="show.first_image" class="" alt=""
-              style="margin-top: 30px; width: 200px; height: 200px;">
+              style="margin-top: 30px; width: 200px; height: 200px;border-radius: 24px;">
             <div class="card-body" style="height: ;">
               <p class="card-text"><b>{{ show.title }}</b></p>
               <p class="card-text"><b>{{ show.addr }}</b></p>

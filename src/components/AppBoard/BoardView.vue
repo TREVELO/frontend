@@ -42,20 +42,29 @@
         <p style="text-align: left; font-size: 20px;">{{ article.content }}</p>
       </div>
 
-      <div style="margin-top: 30px; text-align: left;">
+      <div style="margin-top: 30px; text-align: left; margin-bottom: 100px;">
         총 {{ comments.length }}의 댓글이 있습니다.
         <div style="margin-top: 20px;">
-          <textarea style="width: 100%; height: 120px; border-radius: 8px;" v-model="newComment"
+          <textarea style="width: 100%; height: 120px; border-radius: 8px;" v-model="newComment.content"
             placeholder="댓글을 작성하세요"></textarea>
           <div style="text-align: right;">
-            <button class="btn btn-outline-dark">댓글 작성</button>
+            <button class="btn btn-outline-dark" @click="registerComment">댓글 등록</button>
           </div>
         </div>
-
       </div>
-      <div v-for="(comment, index) in comments" :key="comment.id">
-        <p>{{ index + 1 }}번째 댓글: {{ comment.content }}</p>
-
+      <div v-for="(comment) in comments" :key="comment.id"
+        style="margin-top: 30px; height: auto; border-bottom: 1px solid;">
+        <div style="text-align: left;">
+          {{ comment.content }}
+        </div>
+        <div style="text-align: right;">
+          <button class="btn btn-outline-info" v-if="comment.memberId === userinfo.id">수정</button>
+          <button class="btn btn-outline-danger" @click="deleteComment(comment)"
+            v-if="comment.memberId === userinfo.id">삭제</button>
+          <div class="comment-date" v-if="comment.updatedat === null" style="margin-bottom: 30px;">{{ comment.createdat }}
+          </div>
+          <div class="comment-date" v-else>수정됨 {{ comment.updatedat }}</div>
+        </div>
       </div>
 
 
@@ -77,7 +86,9 @@ export default {
       article: {},
       userinfo: [],
       comments: [],
-      newComment: "",
+      newComment: {
+
+      },
     };
   },
   computed: {
@@ -85,45 +96,8 @@ export default {
   },
   created() {
     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-    console.log(this.userinfo)
-    let param = this.$route.params.articleno;
-    console.log(param)
-    axiosInstance.get('http://localhost/api/v1/board/view/' + param)
-      .then(({ data }) => {
-        console.log(data)
-        if (data.updatedat !== null) {
-          let a = data.updatedat.substring(0, 10);
-          let b = data.updatedat.substring(11, data.updatedat.length);
-          data.updatedat = a + " " + b;
-        } else {
-          let a = data.createdat.substring(0, 10);
-          let b = data.createdat.substring(11, data.createdat.length);
-          data.createdat = a + " " + b;
-        }
-        this.article = data;
-      })
-
-
-    // this.$store.dispatch('memberStore/fetchUserinfo')
-    //   .then(() => {
-    //     // 사용자 정보를 가져왔을 때 필요한 작업 수행
-    //     this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-    //     console.log(this.userinfo);
-    //   })
-    //   .catch(error => {
-    //     // 오류 처리
-    //     console.error(error)
-    //   });
-
-    axiosInstance.get('http://localhost/api/v1/comment/getlist/' + param)
-      .then((res) => {
-        this.comments = res.data;
-        console.log(this.comments);
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-
+    this.boardView();
+    this.commentList();
   },
   methods: {
     // ...mapActions("memberStore", ["decodeToken", "fetchUserinfo"]),
@@ -152,6 +126,73 @@ export default {
     moveList() {
       this.$router.push({ name: "BoardList" });
     },
+    async registerComment() {
+      this.newComment.boardId = this.article.boardId;
+
+      try {
+        await axiosInstance.post('http://localhost/api/v1/comment/write', this.newComment);
+        console.log("댓글 작성 성공");
+
+        await this.commentList();
+
+        this.newComment.content = "";
+      } catch (err) {
+        console.log(err)
+      }
+
+    },
+    boardView() {
+      let param = this.$route.params.articleno;
+      axiosInstance.get('http://localhost/api/v1/board/view/' + param)
+        .then(({ data }) => {
+          console.log(data)
+          if (data.updatedat !== null) {
+            let a = data.updatedat.substring(0, 10);
+            let b = data.updatedat.substring(11, data.updatedat.length);
+            data.updatedat = a + " " + b;
+          } else {
+            let a = data.createdat.substring(0, 10);
+            let b = data.createdat.substring(11, data.createdat.length);
+            data.createdat = a + " " + b;
+          }
+          this.article = data;
+        })
+    },
+    async commentList() {
+      let param = this.$route.params.articleno;
+      axiosInstance.get('http://localhost/api/v1/comment/getlist/' + param)
+        .then((res) => {
+          this.comments = res.data;
+
+          for (let index = 0; index < this.comments.length; index++) {
+            if (this.comments[index].updatedat !== null) {
+              let a = this.comments[index].updatedat.substring(0, 10);
+              let b = this.comments[index].updatedat.substring(11, this.comments[index].updatedat.length);
+              this.comments[index].updatedat = a + " " + b;
+            } else {
+              let a = this.comments[index].createdat.substring(0, 10);
+              let b = this.comments[index].createdat.substring(11, this.comments[index].createdat.length);
+              this.comments[index].createdat = a + " " + b;
+            }
+          }
+
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    async deleteComment(data) {
+
+      if (confirm("댓글 삭제??")) {
+        try {
+          await axiosInstance.delete('http://localhost/api/v1/comment/delete/' + data.commentId);
+
+          await this.commentList();
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
   },
   // filters: {
   //   dateFormat(regtime) {
