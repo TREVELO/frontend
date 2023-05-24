@@ -128,6 +128,19 @@ const routes = [
             },
         ],
     },
+    {
+        path: "/plan",
+        name: "plan",
+        component: () => import("@/views/AppPlan"),
+        redirect: "/plan/list",
+        children: [
+            {
+                path: "list",
+                name: "PlanList",
+                component: () => import("@/components/AppPlan/PlanList"),
+            },
+        ],
+    },
 ];
 
 const router = new VueRouter({
