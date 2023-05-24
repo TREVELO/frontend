@@ -130,6 +130,9 @@
                         </div>
 
                         <div class="modal-footer">
+                            <button class="modal-default-button" @click="showLoginPage">
+                                로그인
+                            </button>
                             <button class="modal-default-button" @click="closefindLoginModal">
                                 닫기
                             </button>
@@ -192,6 +195,9 @@
                         </div>
 
                         <div class="modal-footer">
+                            <button class="modal-default-button" @click="showLoginPage">
+                                로그인
+                            </button>
                             <button class="modal-default-button" @click="closePasswordModal">
                                 닫기
                             </button>
@@ -302,6 +308,11 @@ export default {
             this.defaultLoginModalVisible = false;
             this.passwordResetModalVisible = false;
             this.loginIdFindModalVisible = true;
+        },
+        showLoginPage() {
+            this.defaultLoginModalVisible = true;
+            this.passwordResetModalVisible = false;
+            this.loginIdFindModalVisible = false;
         },
         async findLoginId() {
             if (!this.informationFindRequestDto.email) {
