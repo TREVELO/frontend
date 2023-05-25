@@ -344,17 +344,26 @@ export default {
                 .post("http://localhost/api/v1/member/find/id", this.informationFindRequestDto)
                 .then((response) => {
                     this.findInformationArr.push(response.data);
-                    if (!this.findInformationShow) {
-                        this.findInformationShow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                     console.log(response.data);
                 })
                 .catch((err) => {
                     this.findInformationArr = [];
                     this.findInformationArr.push(err.response.data);
-                    if (!this.findInformationShow) {
-                        this.findInformationShow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
                     console.log(err.response.data);
                 });
         },
@@ -381,15 +390,25 @@ export default {
                 )
                 .then((response) => {
                     this.findInformationArr.push(response.data);
-                    this.findInformationShow = true;
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                     console.log(response.data);
                 })
                 .catch((err) => {
                     this.findInformationArr = [];
                     this.findInformationArr.push(err.response.data);
-                    if (!this.findInformationShow) {
-                        this.findInformationShow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
 
                     console.log(this.findInformationShow);
                     console.log(this.findInformationArr);
