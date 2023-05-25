@@ -88,7 +88,6 @@ export default {
                         this.dayPlans.push(this.plan.path[index])
                         this.check.push("true")
                     }
-
                     console.log(this.plan)
                 })
                 .catch((err) => {
