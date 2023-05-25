@@ -43,17 +43,7 @@
                         </div>
 
                         <div class="signup-section model-footer" style="text-align: center">
-                            <div v-if="errorshow">
-                                <ul id="errorMsg">
-                                    <li v-for="error in errors" :key="error">
-                                        <b>{{ error }}</b>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="signup-section model-footer" style="text-align: center">
-                            회원이 아니신가요? <a href="#a" class="text-info"> 회원 가입</a>.
+                            회원이 아니신가요? <a href="#a" class="text-info"> 회원 가입</a>
                         </div>
 
                         <div
@@ -61,7 +51,7 @@
                             style="text-align: center"
                             @click="showLoginIdFind"
                         >
-                            아이디를 잊으셨나요? <span class="findRequest"> 아이디 찾기</span>.
+                            아이디를 잊으셨나요? <span class="findRequest"> 아이디 찾기</span>
                         </div>
 
                         <div
@@ -70,7 +60,7 @@
                             @click="showPasswordFind"
                         >
                             비밀번호를 잊으셨나요?
-                            <span class="findRequest"> 비밀번호 찾기</span>.
+                            <span class="findRequest"> 비밀번호 찾기</span>
                         </div>
                     </div>
                 </div>
@@ -212,6 +202,8 @@
 <script>
 import axios from "axios";
 import { mapActions, mapGetters } from "vuex";
+import Swal from "sweetalert2";
+
 //import MainHeaderVue from './Main-Header.vue';
 
 export default {
@@ -242,15 +234,24 @@ export default {
         ...mapActions("memberStore", ["setToken", "getToken", "fetchUserinfo"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
 
         validationCheck() {
-            this.errors = [];
             if (!this.form.loginId) {
                 this.errors.push("아이디를 입력해주세요.");
-            }
-            if (!this.form.loginPassword) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "아이디를 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else if (!this.form.loginPassword) {
                 this.errors.push("비밀번호를 입력해주세요.");
-            }
-            if (!this.errorshow) {
-                this.errorshow = true;
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "비밀번호를 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
             }
         },
         async login() {
@@ -287,6 +288,15 @@ export default {
                     }
 
                     console.log("유저 정보");
+
+                    await Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "로그인 되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
                     this.$emit("close");
                     //{ MainHeaderVue.mainHeaderReload() }
                 } catch (error) {
@@ -296,6 +306,13 @@ export default {
                     if (!this.errorshow) {
                         this.errorshow = true;
                     }
+                    await Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: `${this.errors}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                 }
             }
         },
@@ -316,7 +333,10 @@ export default {
         },
         async findLoginId() {
             if (!this.informationFindRequestDto.email) {
-                alert("이메일은 필수 입력 사항입니다.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "이메일은 필수 입력 사항입니다.",
+                });
                 return;
             }
 
@@ -324,27 +344,42 @@ export default {
                 .post("http://localhost/api/v1/member/find/id", this.informationFindRequestDto)
                 .then((response) => {
                     this.findInformationArr.push(response.data);
-                    if (!this.findInformationShow) {
-                        this.findInformationShow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                     console.log(response.data);
                 })
                 .catch((err) => {
                     this.findInformationArr = [];
                     this.findInformationArr.push(err.response.data);
-                    if (!this.findInformationShow) {
-                        this.findInformationShow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
                     console.log(err.response.data);
                 });
         },
         async findPassword() {
             if (!this.informationFindRequestDto.email) {
-                alert("이메일은 필수 입력 사항입니다.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "이메일은 필수 입력 사항입니다.",
+                });
                 return;
             }
             if (!this.informationFindRequestDto.loginId) {
-                alert("아이디는 필수 입력 사항입니다.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "아이디는 필수 입력 사항입니다.",
+                });
                 return;
             }
 
@@ -355,15 +390,25 @@ export default {
                 )
                 .then((response) => {
                     this.findInformationArr.push(response.data);
-                    this.findInformationShow = true;
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                     console.log(response.data);
                 })
                 .catch((err) => {
                     this.findInformationArr = [];
                     this.findInformationArr.push(err.response.data);
-                    if (!this.findInformationShow) {
-                        this.findInformationShow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: `${this.findInformationArr}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
 
                     console.log(this.findInformationShow);
                     console.log(this.findInformationArr);
@@ -385,10 +430,6 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap");
 
-* {
-    font-family: "Open Sans", sans-serif;
-}
-
 .modal-mask {
     position: fixed;
     z-index: 9998;
@@ -399,6 +440,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.5);
     display: table;
     transition: opacity 0.3s ease;
+    border-radius: 24px;
 }
 
 .modal-wrapper {
@@ -415,7 +457,7 @@ export default {
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     transition: all 0.3s ease;
-    font-family: Helvetica, Arial, sans-serif;
+    border-radius: 24px;
 }
 
 .modal-header h3 {

@@ -47,13 +47,12 @@
         </table>
 
         <div>
-            <button class="btn btn-outline-secondary">마일리지 충전</button>
             <button class="btn btn-outline-secondary">
                 <router-link to="modify" style="text-decoration: none; color: black"
                     >회원정보 수정</router-link
                 >
             </button>
-            <button class="btn btn-outline-secondary">예약내역</button>
+            <button class="btn btn-outline-danger" @click="signOut()">회원 탈퇴</button>
         </div>
     </div>
 </template>
@@ -61,6 +60,7 @@
 <script>
 import { loadTossPayments } from "@tosspayments/payment-sdk";
 import axiosInstance from "@/api/axiosInstance";
+import Swal from "sweetalert2";
 
 export default {
     name: "MypageView",
@@ -98,7 +98,10 @@ export default {
     methods: {
         async requestValidation() {
             if (this.amount <= 0) {
-                alert("1원 이상 입력해주세요.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "1원 이상 입력해주세요.",
+                });
                 return;
             }
 
@@ -123,6 +126,14 @@ export default {
                 }
 
                 this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "충전이 완료되었습니다.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
 
                 console.log("openPaymentWindow() 종료");
             } catch (error) {
@@ -164,6 +175,49 @@ export default {
                 .catch((error) => {
                     console.error("Failed to load TossPayments SDK:", error);
                 });
+        },
+        signOut() {
+            if (
+                Swal.fire({
+                    title: "회원 탈퇴하시겠습니까?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axiosInstance
+                            .delete("/member/signout/")
+                            .then((response) => {
+                                console.log(response);
+                                this.$store.dispatch("memberStore/resetMemberState");
+                                sessionStorage.clear();
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "회원 탈퇴되었습니다.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1500);
+                            })
+                            .catch((err) => {
+                                console.log(err.response.data);
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "error",
+                                    title: `${err.response.data}`,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                            });
+                    }
+                })
+            );
         },
     },
 };

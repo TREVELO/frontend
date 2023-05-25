@@ -24,20 +24,29 @@
                         <td>{{ reservation.checkOutDate }}</td>
                         <td>{{ reservation.createdat }}</td>
                         <td>
-                            <b-button
-                                v-if="reservation.isPaid"
-                                variant="danger"
-                                @click="cancelReservation(reservation.id)"
-                            >
-                                Cancel Reservation
-                            </b-button>
-                            <b-button
-                                v-else
-                                variant="primary"
-                                @click="processPayment(reservation.id)"
-                            >
-                                Process Payment
-                            </b-button>
+                            <div v-if="reservation.paid">
+                                <b> 결제 완료 </b>
+                                <a
+                                    class="reservationCancel"
+                                    @click="cancelReservation(reservation.id)"
+                                >
+                                    결제취소
+                                </a>
+                            </div>
+                            <div v-else>
+                                <a
+                                    class="reservationPayment"
+                                    @click="processPayment(reservation.id)"
+                                >
+                                    예약확정
+                                </a>
+                                <a
+                                    class="reservationCancel"
+                                    @click="cancelReservation(reservation.id)"
+                                >
+                                    예약취소
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -47,8 +56,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import axiosInstance from "@/api/axiosInstance";
+import { mapGetters, mapMutations } from "vuex";
+import Swal from "sweetalert2";
 
 export default {
     data() {
@@ -59,10 +69,17 @@ export default {
     },
     computed: {
         ...mapGetters("memberStore", ["getUserinfo"]),
+        ...mapGetters("ReservationStore", ["isPaidReservations"]),
     },
     created() {
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
         console.log(this.userinfo.email);
+        this.tossPaymentsRequestDto = {
+            amount: "",
+            memberId: this.userinfo.id,
+            customerEmail: this.userinfo.email,
+            customerName: this.userinfo.name,
+        };
         this.fetchReservations();
     },
     methods: {
@@ -76,12 +93,100 @@ export default {
                     console.error(error);
                 });
         },
-        // cancelReservation(reservationId) {
-        //     // 예약 취소 로직을 구현하세요.
-        // },
-        // processPayment(reservationId) {
-        //     // 결제 처리 로직을 구현하세요.
-        // },
+        cancelReservation(reservationId) {
+            if (
+                Swal.fire({
+                    title: "예약을 취소하시겠습니까?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axiosInstance
+                            .delete(`/reservation/${reservationId}`)
+                            .then((response) => {
+                                console.log(response);
+                                this.reservationList = this.reservationList.filter(
+                                    (reservation) => reservation.id !== reservationId
+                                );
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "취소가 완료되었습니다.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                            })
+                            .catch((err) => {
+                                console.log(err.response.data);
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "error",
+                                    title: `${err.response.data}`,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                            });
+                    }
+                })
+            );
+        },
+        ...mapMutations("store", ["addPaidReservation"]),
+        processPayment(reservationId) {
+            Swal.fire({
+                title: "예약을 확정하시겠습니까?",
+                text: "총 금액의 90%가 마일리지에서 차감됩니다.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axiosInstance
+                        .get(`/reservation/${reservationId}/confirm`)
+                        .then((response) => {
+                            console.log(response);
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "예약 확정되었습니다.",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+
+                            // 결제 처리 후에 reservationList를 업데이트
+                            this.reservationList = this.reservationList.map((reservation) => {
+                                if (reservation.id === reservationId) {
+                                    return {
+                                        ...reservation,
+                                        isPaid: true,
+                                    };
+                                }
+                                return { ...reservation };
+                            });
+
+                            this.addPaidReservation(reservationId); // Vuex Store에 결제 완료 예약 ID 추가
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        })
+                        .catch((err) => {
+                            console.log(err.response.data);
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "error",
+                                title: `${err.response.data}`,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        });
+                }
+            });
+        },
         goToRoomDetail(roomId) {
             this.$router.push(`/room/view/${roomId}`);
         },
@@ -117,6 +222,18 @@ export default {
 
 .roomNameHover:hover {
     color: #007bff;
+    cursor: pointer;
+}
+
+.reservationCancel {
+    color: red;
+}
+
+.reservationCancel:hover {
+    cursor: pointer;
+}
+
+.reservationPayment:hover {
     cursor: pointer;
 }
 </style>
