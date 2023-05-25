@@ -113,19 +113,19 @@
       >
         <div style="text-align: left">
           <p>{{ review.content }}</p>
-          <star-rating
-            :increment="0.5"
-            :rating="review.rating"
-            :read-only="true"
-          ></star-rating>
-        </div>
-        <div style="text-align: right">
           <div
-            class="review-date"
-            v-if="review.updatedat === null"
-            style="margin-bottom: 30px"
+            style="display: flex; flex-direction: column; align-items: flex-end"
           >
-            {{ review.createdat }}
+            <star-rating
+              class="small-star"
+              :increment="0.5"
+              :rating="review.rating"
+              :read-only="true"
+              v-bind:star-size="25"
+            ></star-rating>
+            <div class="review-date" style="margin-top: 10px">
+              {{ review.createdat }}
+            </div>
           </div>
         </div>
       </div>
@@ -164,6 +164,7 @@ export default {
       checkOutDate: new Date().toISOString().substr(0, 10),
       reviews: [], // 리뷰 목록을 담을 배열
       newReview: "",
+      rating: "0",
     };
   },
   computed: {
