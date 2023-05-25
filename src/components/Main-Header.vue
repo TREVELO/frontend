@@ -64,6 +64,8 @@
 import LoginModal from "./LoginModal.vue";
 import { mapGetters, mapActions } from "vuex";
 import RegisterModalVue from "./RegisterModal.vue";
+import Swal from "sweetalert2";
+
 // import memberStore from '@/store/modules/memberStore';
 
 export default {
@@ -145,9 +147,15 @@ export default {
             console.log("goSearch 실행");
             console.log(searchbox);
             if (searchbox.subject == -1) {
-                alert("유형을 선택해주세요!!");
+                Swal.fire({
+                    icon: "error",
+                    title: "검색 유형을 선택해주세요.",
+                });
             } else if (searchbox.sentence == "") {
-                alert("검색어를 입력해주세요!!");
+                Swal.fire({
+                    icon: "error",
+                    title: "검색어를 입력해주세요.",
+                });
             } else {
                 console.log(this.$route.path);
                 if (this.$route.path === "/map/Map") {

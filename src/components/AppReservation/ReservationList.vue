@@ -38,13 +38,7 @@
                                     class="reservationPayment"
                                     @click="processPayment(reservation.id)"
                                 >
-                                    결제
-                                </a>
-                                <a
-                                    class="reservationPayment"
-                                    @click="processPayment(reservation.id)"
-                                >
-                                    마일리지
+                                    예약확정
                                 </a>
                                 <a
                                     class="reservationCancel"
