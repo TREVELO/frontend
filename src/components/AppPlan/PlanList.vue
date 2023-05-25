@@ -1,11 +1,13 @@
 <template>
     <div>
-        PlanList화면
-        <button class="btn btn-primary"><router-link :to="{ name: 'PlanWrite' }">글작성</router-link></button>
-
         <b-container>
-            <b-table hover :items="planList" :fields="planListfields">
-
+            <div style="display: flex; justify-content: flex-end; margin-top: 20px; margin-bottom: 30px;">
+                <button class="btn btn-outline-primary" @click="gowrite">글작성</button>
+            </div>
+            <b-table hover :items="planList" :fields="planListfields" @row-clicked="view">
+                <template #cell(planName)="row">
+                    <span>{{ row.item.planName }}</span>
+                </template>
             </b-table>
         </b-container>
     </div>
@@ -48,11 +50,22 @@ export default {
             axiosInstance.get('http://localhost/api/v1/plan/list')
                 .then((res) => {
                     this.planList = res.data;
-                    console.log(this.planList);
+                    console.log("여행계획", this.planList);
+
+                    for (var index = 0; index < this.planList.length; index++) {
+                        this.planList[index].createdat = this.planList[index].createdat.substring(0, 10) + " " + this.planList[index].createdat.substring(11, this.planList[index].createdat.length);
+                    }
+
                 })
                 .catch((err) => {
                     console.log(err)
                 })
+        },
+        view(item) {
+            this.$router.push({ name: 'PlanView', params: { planId: item.planId } })
+        },
+        gowrite() {
+            this.$router.push({ name: 'PlanWrite' })
         }
     }
 
