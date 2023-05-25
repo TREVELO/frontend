@@ -262,7 +262,10 @@ export default {
         },
         disabledDates(ymd, date) {
             const formattedDate = moment(date).format("YYYY-MM-DD");
-            return this.reservedDates.includes(formattedDate);
+            const isBeforeToday = moment(date).isBefore(moment(), "day");
+            const isReservedDate = this.reservedDates.includes(formattedDate);
+
+            return isBeforeToday || isReservedDate; // 이전 날짜 또는 예약된 날짜에 대해 비활성화 처리
         },
     },
 };
