@@ -45,9 +45,9 @@
       <div style="margin-top: 30px; text-align: left; margin-bottom: 100px;">
         총 {{ comments.length }}개의 댓글이 있습니다.
         <div style="margin-top: 20px;">
-          <textarea style="padding-left: 10px; padding-right: 10px; width: 100%; height: 120px; border-radius: 8px;"
-            v-model="newComment.content" placeholder="댓글을 작성하세요"></textarea>
-          <div style="text-align: right;">
+          <b-form-textarea style="padding-left: 10px; padding-right: 10px; width: 100%; height: 120px; border-radius: 8px;"
+            v-model="newComment.content" placeholder="댓글을 작성하세요"></b-form-textarea>
+          <div style="text-align: right; margin-top: 30px;">
             <button class="btn btn-outline-dark" @click="registerComment">댓글 등록</button>
           </div>
         </div>
@@ -73,9 +73,9 @@
         </div>
 
         <div v-else>
-          <textarea
+          <b-form-textarea
             style="text-align: left; width: 100%; height: 100px; border-radius: 8px; padding-left: 10px; padding-right: 10px;"
-            v-model="mContent" :placeholder="comment.content"></textarea>
+            v-model="mContent" :placeholder="comment.content"></b-form-textarea>
           <div style="text-align: right;">
             <button style="background-color: transparent; border: none;"><font-awesome-icon style="margin-right: 5px;"
                 v-if="comment.memberId === userinfo.id" icon="fa-solid fa-check"
