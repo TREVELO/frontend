@@ -145,12 +145,12 @@ export default {
                         icon: "success",
                         title: "로그아웃 되었습니다.",
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 850,
                     });
 
                     setTimeout(() => {
                         location.reload();
-                    }, 1500);
+                    }, 850);
                 }
             });
         },

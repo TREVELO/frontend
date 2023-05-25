@@ -66,6 +66,48 @@
                 </div>
             </div>
         </div>
+        <div>
+            <div style="margin-top: 30px; text-align: left; margin-bottom: 100px">
+                총 {{ reviews.length }}개의 리뷰가 있습니다.
+                <div style="margin-top: 20px">
+                    <b-form-textarea
+                        style="
+                            padding-left: 10px;
+                            padding-right: 10px;
+                            width: 100%;
+                            height: 120px;
+                            border-radius: 8px;
+                        "
+                        v-model="newReview"
+                        placeholder="리뷰를 작성하세요"
+                    ></b-form-textarea>
+                    <div style="text-align: right; margin-top: 30px">
+                        <button class="btn btn-outline-dark" @click="registerReview">
+                            리뷰 등록
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                v-for="review in reviews"
+                :key="review.id"
+                style="margin-top: 30px; height: auto; border-bottom: 1px solid"
+            >
+                <div style="text-align: left">
+                    {{ review.content }}
+                </div>
+                <div style="text-align: right">
+                    <div
+                        class="review-date"
+                        v-if="review.updatedat === null"
+                        style="margin-bottom: 30px"
+                    >
+                        {{ review.createdat }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -74,8 +116,12 @@ import axiosInstance from "@/api/axiosInstance";
 import { mapGetters } from "vuex";
 import moment from "moment";
 import Swal from "sweetalert2";
+//import StarRating from "vue-star-rating";
 
 export default {
+    // components: {
+    //     StarRating,
+    // },
     data() {
         return {
             roomId: "",
@@ -94,6 +140,8 @@ export default {
             reservedDates: [], // 예약된 날짜 목록
             checkInDate: new Date().toISOString().substr(0, 10),
             checkOutDate: new Date().toISOString().substr(0, 10),
+            reviews: [], // 리뷰 목록을 담을 배열
+            newReview: "",
         };
     },
     computed: {
@@ -108,6 +156,7 @@ export default {
         // roomId를 이용하여 숙소 정보를 가져옴
         this.fetchRoomData(this.roomId);
         this.fetchReservedDates(this.roomId);
+        this.fetchReviewData(this.roomId);
     },
     methods: {
         // 사진 선택 시 호출되는 메서드
@@ -265,6 +314,33 @@ export default {
             const isReservedDate = this.reservedDates.includes(formattedDate);
 
             return isBeforeToday || isReservedDate; // 이전 날짜 또는 예약된 날짜에 대해 비활성화 처리
+        },
+        fetchReviewData(roomId) {
+            axiosInstance
+                .get(`/review/${roomId}`)
+                .then((response) => {
+                    this.reviews = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        registerReview() {
+            const reviewSaveRequestDto = {
+                memberId: this.userinfo.id,
+                roomId: this.roomId,
+                content: this.newReview,
+                rating: 1.1,
+            };
+
+            axiosInstance
+                .post(`/review/${this.roomId}`, reviewSaveRequestDto)
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
     },
 };
