@@ -92,6 +92,7 @@ export default {
     data() {
         return {
             form: {},
+            errors: [],
         };
     },
     computed: {
@@ -103,27 +104,54 @@ export default {
 
         validationCheck() {
             if (!this.form.name) {
-                this.errors.push("이름을 입력해주세요.");
                 Swal.fire({
                     position: "top-end",
-                    icon: "success",
-                    title: "취소가 완료되었습니다.",
+                    icon: "error",
+                    title: "이름을 입력해주세요.",
                     showConfirmButton: false,
                     timer: 1500,
                 });
                 return;
             }
             if (!this.form.loginId) {
-                this.errors.push("아이디를 입력해주세요.");
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "아이디를 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                return;
             }
             if (!this.form.loginPassword) {
-                this.errors.push("비밀번호를 입력해주세요.");
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "비밀번호를 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                return;
             }
             if (!this.form.birthday) {
-                this.errors.push("생일을 입력해주세요.");
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "생일을 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                return;
             }
             if (!this.form.email) {
-                this.errors.push("이메일을 입력해주세요.");
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "이메일을 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                return;
             }
         },
         async join() {
@@ -163,9 +191,14 @@ export default {
                     console.log(error.response.data);
                     this.errors = [];
                     this.errors.push(error.response.data);
-                    if (!this.errorshow) {
-                        this.errorshow = true;
-                    }
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: `${this.errors}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    return;
                 }
             }
         },

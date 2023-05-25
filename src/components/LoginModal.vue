@@ -308,7 +308,7 @@ export default {
                     }
                     await Swal.fire({
                         position: "top-end",
-                        icon: "fail",
+                        icon: "error",
                         title: `${this.errors}`,
                         showConfirmButton: false,
                         timer: 1500,
