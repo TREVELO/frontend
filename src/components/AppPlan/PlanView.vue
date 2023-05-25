@@ -16,18 +16,12 @@
 
             <div style="margin-bottom: 50px;">
                 <b-form-checkbox value="true" unchecked-value="false" v-for="(index, i) in day" :key="i"
-                    style="display: inline; margin: 10px;" v-model="check[index - 1]">
+                    style="display: inline; margin: 10px;" v-model="check[index - 1]" @change="updateMarker">
                     {{ index }}일차
                 </b-form-checkbox>
             </div>
 
             <div id="map" style="margin: 0 auto;"></div>
-
-            <div>
-                {{ plan.path }}
-            </div>
-
-
         </b-container>
 
     </div>
@@ -39,17 +33,12 @@ export default {
     data() {
         return {
             plan: {},
-            markerPositions: [
-                {
-                    latitude: '',
-                    longitude: ''
-                }
-            ],
-            marker: [],
+            markerPositions: [],
+            markers: [],
             day: '',
             dayPlans: [],
             check: [],
-            allPositions : [],
+            allMarkers :[],
         }
     },
     mounted() {
@@ -63,20 +52,19 @@ export default {
                 "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=68a4947f8091662e797250d4aa2d4a54";
             document.head.appendChild(script);
         }
-    },
-    created() {
+
         this.getPlan();
 
-        for (var index = 0; index < this.plan.length; index++){
+        for (var index = 0; index < this.plan.length; index++) {
 
-            for (var index2 = 0; index2 < this.plan[index].length; index2++){
+            for (var index2 = 0; index2 < this.plan[index].length; index2++) {
 
-                this.markerPositions[index].push([this.plan[index].attraction[index2].latitude, this.plan[index].attraction[index2].longitude]);
+                this.markerPositions.push([this.plan[index].attraction[index2].latitude, this.plan[index].attraction[index2].longitude]);
 
             }
-
             this.allPositions.push(this.markerPositions[index]);
         }
+
     },
     methods: {
         initMap() {
@@ -102,9 +90,22 @@ export default {
 
                     for (var index = 0; index < this.plan.path.length; index++) {
                         this.dayPlans.push(this.plan.path[index])
-                        this.check.push("true")
+                        this.check.push("false")
                     }
+                    
                     console.log(this.plan)
+
+                    for (var index1 = 0; index1 < this.plan.path.length; index1++){
+                        console.log("index1 = " + index1)
+                        let now = [];
+                        for (var index2 = 0; index2 < this.plan.path[index1].attraction.length; index2++){
+                            now.push([this.plan.path[index1].attraction[index2].latitude, this.plan.path[index1].attraction[index2].longitude, index1])
+                            console.log("index2 = " + index2)
+                        }
+
+                        this.markerPositions.push(now)
+                        
+                    }
                 })
                 .catch((err) => {
                     console.log(err)
@@ -138,16 +139,34 @@ export default {
             );
 
             // console.log("positions")
-            // console.log(positions)
+            console.log(markerPositions)
+            console.log("positions" + positions)
 
+            var imageSrc = []; // 마커이미지의 주소입니다
+
+            for (var index = 1; index <= markerPositions.length; index++){
+                imageSrc.push(`https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=${index}|ff776b`)
+            }
+
+            var imageSize = new kakao.maps.Size(32, 35), // 마커이미지의 크기입니다
+                imageOption = { offset: new kakao.maps.Point(27, 69) };
+            
             if (positions.length > 0) {
-                this.markers = positions.map(
-                    (position) =>
-                        new kakao.maps.Marker({
+                // this.markers = positions.map(
+                //     (position) =>
+                //         new kakao.maps.Marker({
+                //             map: this.map,
+                //             position,
+                //         })
+                // );
+
+                for (let i = 0; i < positions.length; i++){
+                        this.markers[i] = new kakao.maps.Marker({
                             map: this.map,
-                            position,
+                            position: positions[i],
+                            image: new kakao.maps.MarkerImage(imageSrc[markerPositions[i][2]], imageSize, imageOption)
                         })
-                );
+                }
 
                 const bounds = positions.reduce(
                     (bounds, latlng) => bounds.extend(latlng),
@@ -157,7 +176,25 @@ export default {
                 this.map.setBounds(bounds);
             }
         },
-    }
+        updateMarker() {
+            console.log("마커 띄우기")
+            console.log(this.check.length)
+
+            let now = [];
+
+            for (var index = 0; index < this.check.length; index++){
+                if (this.check[index] == "true") {
+
+                    for (var index2 = 0; index2 < this.markerPositions[index].length; index2++){
+                        now.push(this.markerPositions[index][index2])
+                    }
+                    
+                }
+            }
+
+            this.displayMarker(now)
+        }
+    },
 }
 </script>
 
