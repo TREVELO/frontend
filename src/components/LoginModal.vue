@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="signup-section model-footer" style="text-align: center">
-                            회원이 아니신가요? <a href="#a" class="text-info"> 회원 가입</a>.
+                            회원이 아니신가요? <a href="#a" class="text-info"> 회원 가입</a>
                         </div>
 
                         <div
@@ -51,7 +51,7 @@
                             style="text-align: center"
                             @click="showLoginIdFind"
                         >
-                            아이디를 잊으셨나요? <span class="findRequest"> 아이디 찾기</span>.
+                            아이디를 잊으셨나요? <span class="findRequest"> 아이디 찾기</span>
                         </div>
 
                         <div
@@ -60,7 +60,7 @@
                             @click="showPasswordFind"
                         >
                             비밀번호를 잊으셨나요?
-                            <span class="findRequest"> 비밀번호 찾기</span>.
+                            <span class="findRequest"> 비밀번호 찾기</span>
                         </div>
                     </div>
                 </div>
@@ -440,6 +440,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.5);
     display: table;
     transition: opacity 0.3s ease;
+    border-radius: 24px;
 }
 
 .modal-wrapper {
@@ -456,7 +457,7 @@ export default {
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     transition: all 0.3s ease;
-    font-family: Helvetica, Arial, sans-serif;
+    border-radius: 24px;
 }
 
 .modal-header h3 {
