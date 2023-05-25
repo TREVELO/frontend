@@ -39,11 +39,17 @@ export default {
     data() {
         return {
             plan: {},
-            markerPositions: [],
+            markerPositions: [
+                {
+                    latitude: '',
+                    longitude: ''
+                }
+            ],
             marker: [],
             day: '',
             dayPlans: [],
             check: [],
+            allPositions : [],
         }
     },
     mounted() {
@@ -61,6 +67,16 @@ export default {
     created() {
         this.getPlan();
 
+        for (var index = 0; index < this.plan.length; index++){
+
+            for (var index2 = 0; index2 < this.plan[index].length; index2++){
+
+                this.markerPositions[index].push([this.plan[index].attraction[index2].latitude, this.plan[index].attraction[index2].longitude]);
+
+            }
+
+            this.allPositions.push(this.markerPositions[index]);
+        }
     },
     methods: {
         initMap() {
@@ -108,7 +124,7 @@ export default {
                     })
             }
         },
-        displayMarker(markerPositions) {
+        async displayMarker(markerPositions) {
             // console.log(this.attractions)
             console.log("처음 markerpositions")
             console.log(this.markerPositions)
