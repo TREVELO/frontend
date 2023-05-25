@@ -267,8 +267,8 @@ label {
     text-align: center;
     padding: auto;
     float: right;
-    margin-right: 60px;
-    margin-left: 30px;
+    margin-right: 30px; /* 값 변경 */
+    margin-left: 10px; /* 값 변경 */
     margin-top: 30px;
     margin-bottom: 30px;
     position: relative;
@@ -276,6 +276,8 @@ label {
     opacity: 50%;
     border: none;
     background-color: transparent;
+    font-size: 18px; /* 원하는 글자 크기 값으로 변경 가능 */
+    font-weight: bold; /* 볼드체 적용 */
 }
 
 ::placeholder {
