@@ -96,6 +96,7 @@
 
 <script>
 import axiosInstance from "@/api/axiosInstance";
+import Swal from "sweetalert2";
 
 export default {
     name: "MypageModify",
@@ -120,32 +121,78 @@ export default {
     methods: {
         memberModify() {
             if (!this.memberUpdateDto.loginPassword || !this.memberUpdateDto.email) {
-                alert("수정 할 항목을 작성해주세요.");
+                Swal.fire({
+                    icon: "error",
+                    title: "수정 할 항목을 작성해주세요.",
+                });
                 return;
             }
 
-            if (confirm("회원 정보를 변경하시겠습니까?")) {
-                console.log(this.memberUpdateDto);
+            if (
+                Swal.fire({
+                    title: "회원 정보를 변경하시겠습니까?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axiosInstance
+                            .put("/member/mypage", this.memberUpdateDto)
+                            .then((response) => {
+                                console.log(response.data);
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "정보가 수정되었습니다.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
 
-                axiosInstance
-                    .put("/member/mypage", this.memberUpdateDto)
-                    .then((response) => {
-                        console.log(response.data);
-                        alert("정보가 수정되었습니다.");
-
-                        // 변경된 정보를 가져오기 위해 fetchUserinfo 액션 호출
-                        this.$store.dispatch("memberStore/fetchUserinfo").then(() => {
-                            // 변경된 정보로 userinfo 업데이트
-                            this.userinfo = this.$store.getters["memberStore/getUserinfo"];
-                            // 페이지 이동
-                            this.$router.push({ path: "/mypage" });
+                                // 변경된 정보를 가져오기 위해 fetchUserinfo 액션 호출
+                                this.$store.dispatch("memberStore/fetchUserinfo").then(() => {
+                                    // 변경된 정보로 userinfo 업데이트
+                                    this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+                                    // 페이지 이동
+                                    this.$router.push({ path: "/mypage" });
+                                });
+                            });
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "서버 에러입니다. 잠시후 다시 시도해주세요.",
                         });
-                    })
-                    .catch((err) => {
-                        console.log(err.response.data);
-                        alert(err.response.data);
-                    });
-            }
+                    }
+                })
+            );
+
+            // if (confirm("회원 정보를 변경하시겠습니까?")) {
+            //     axiosInstance
+            //         .put("/member/mypage", this.memberUpdateDto)
+            //         .then((response) => {
+            //             console.log(response.data);
+            //             Swal.fire({
+            //                 position: "top-end",
+            //                 icon: "success",
+            //                 title: "정보가 수정되었습니다.",
+            //                 showConfirmButton: false,
+            //                 timer: 1500,
+            //             });
+
+            //             // 변경된 정보를 가져오기 위해 fetchUserinfo 액션 호출
+            //             this.$store.dispatch("memberStore/fetchUserinfo").then(() => {
+            //                 // 변경된 정보로 userinfo 업데이트
+            //                 this.userinfo = this.$store.getters["memberStore/getUserinfo"];
+            //                 // 페이지 이동
+            //                 this.$router.push({ path: "/mypage" });
+            //             });
+            //         })
+            //         .catch((err) => {
+            //             console.log(err.response.data);
+            //             alert(err.response.data);
+            //         });
+            // }
         },
     },
 };
