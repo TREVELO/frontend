@@ -61,6 +61,7 @@
 <script>
 import { loadTossPayments } from "@tosspayments/payment-sdk";
 import axiosInstance from "@/api/axiosInstance";
+import Swal from "sweetalert2";
 
 export default {
     name: "MypageView",
@@ -98,7 +99,10 @@ export default {
     methods: {
         async requestValidation() {
             if (this.amount <= 0) {
-                alert("1원 이상 입력해주세요.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "1원 이상 입력해주세요.",
+                });
                 return;
             }
 

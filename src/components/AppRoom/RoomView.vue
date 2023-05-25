@@ -163,6 +163,7 @@ export default {
         },
         async makeReservation() {
             // 예약 생성 로직
+
             if (!this.checkInDate) {
                 await Swal.fire({
                     icon: "error",
@@ -196,9 +197,15 @@ export default {
                 return;
             }
 
+            const checkIn = moment(this.checkInDate, "YYYY-MM-DD");
+            const checkOut = moment(this.checkOutDate, "YYYY-MM-DD");
+            const nights = checkOut.diff(checkIn, "days");
+
             const result = await Swal.fire({
                 title: `${this.checkInDate} 부터 ${this.checkOutDate} 까지 예약하시겠습니까?`,
-                text: "총 숙박 금액의 10%가 예약금으로 결제 될 것입니다.",
+                text: `총 숙박 금액의 10%(${
+                    (nights + 1) * this.pricePerNight * 0.1
+                })가 예약금으로 결제 될 것입니다.`,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "예약",
@@ -217,7 +224,13 @@ export default {
                     .post(`/reservation/${this.roomId}`, reservationData)
                     .then((response) => {
                         console.log(response.data);
-                        alert("예약이 완료되었습니다.");
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "예약이 완료되었습니다.",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
                         this.$router.push({ name: "ReservationList" });
                     })
                     .catch((error) => {

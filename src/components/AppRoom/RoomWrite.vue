@@ -91,6 +91,7 @@
 </template>
 <script>
 import axiosInstance from "@/api/axiosInstance";
+import Swal from "sweetalert2";
 
 export default {
     data() {
@@ -126,7 +127,10 @@ export default {
                 !this.formData.pricePerNight ||
                 this.imageFiles.length == 0
             ) {
-                alert("모든 요소가 입력되어야 합니다.");
+                Swal.fire({
+                    icon: "error",
+                    title: "모든 요소가 입력되어야 합니다.",
+                });
                 return;
             }
             const roomCreateRequestDto = {
@@ -155,6 +159,13 @@ export default {
                 .then((response) => {
                     // 등록 성공 시, 처리 로직 추가
                     console.log("숙소 등록 성공:", response.data);
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "숙소가 등록되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                     this.$router.push("/room/list");
                 })
                 .catch((error) => {
