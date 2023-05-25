@@ -170,6 +170,15 @@ export default {
                     icon: "error",
                     title: "검색 유형을 선택해주세요.",
                 });
+            } else if (searchbox.subject == 32) {
+                this.$router
+                    .push({
+                        name: "roomList",
+                        params: {
+                            keyword: searchbox.sentence,
+                        },
+                    })
+                    .catch(() => {});
             } else if (searchbox.sentence == "") {
                 Swal.fire({
                     icon: "error",

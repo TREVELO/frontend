@@ -40,21 +40,25 @@ export default {
     },
     created() {
         // 숙소 목록 데이터를 백엔드 API로부터 가져옵니다.
-        axiosInstance
-            .get("/room/")
-            .then((response) => {
-                // 가져온 데이터를 숙소 목록으로 설정합니다.
-                this.roomList = response.data.map((room) => ({
-                    id: room.id,
-                    roomName: room.roomName,
-                    address: room.address,
-                    pricePerNight: room.pricePerNight,
-                    picture: room.picture,
-                }));
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        if (this.$route.params.keyword) {
+            this.searchRooms(this.$route.params.keyword);
+        } else {
+            axiosInstance
+                .get("/room/")
+                .then((response) => {
+                    // 가져온 데이터를 숙소 목록으로 설정합니다.
+                    this.roomList = response.data.map((room) => ({
+                        id: room.id,
+                        roomName: room.roomName,
+                        address: room.address,
+                        pricePerNight: room.pricePerNight,
+                        picture: room.picture,
+                    }));
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
 
         // 로그인한 멤버의 롤(Role)에 따라 숙소 등록 버튼의 가시성을 설정합니다.
         this.userinfo = this.$store.getters["memberStore/getUserinfo"];
@@ -67,6 +71,26 @@ export default {
         goToWriteRoom() {
             // 숙소 등록 페이지로 이동합니다.
             this.$router.push({ name: "roomWrite" });
+        },
+        searchRooms(keyword) {
+            axiosInstance
+                .get("/room/search", {
+                    params: {
+                        keyword: keyword,
+                    },
+                })
+                .then((response) => {
+                    this.roomList = response.data.map((room) => ({
+                        id: room.id,
+                        roomName: room.roomName,
+                        address: room.address,
+                        pricePerNight: room.pricePerNight,
+                        picture: room.picture,
+                    }));
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         },
     },
 };
