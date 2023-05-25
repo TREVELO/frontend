@@ -113,9 +113,6 @@ li {
 button {
     font-size: large;
     border: none;
-    font-family: "Open Sans", sans-serif;
     background-color: transparent;
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans&display=swap");
 </style>
