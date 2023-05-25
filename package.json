@@ -26,6 +26,7 @@
     "vue-geolocation-api": "^0.1.21",
     "vue-js-modal": "^2.0.1",
     "vue-router": "^3.5.1",
+    "vue-star-rating": "^1.7.0",
     "vue-strap": "^1.1.40",
     "vue2-datepicker": "^3.11.1",
     "vuex": "^3.6.2",

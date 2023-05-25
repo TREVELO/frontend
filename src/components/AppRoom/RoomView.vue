@@ -22,7 +22,7 @@
             </div>
 
             <!-- 오른쪽 영역 - 숙소 정보 -->
-            <div class="col-md-4">
+            <div class="col-md-4" style="position: relative">
                 <h2>{{ roomName }}</h2>
                 <p>₩{{ pricePerNight }}/박</p>
                 <p>{{ address }}</p>
@@ -53,18 +53,17 @@
                     </ul>
                 </pre>
                 </div>
-            </div>
-        </div>
-
-        <!-- 숙소 수정과 숙소 삭제 버튼 -->
-        <div class="row">
-            <div class="col-md-4 offset-md-8">
-                <button v-if="isOwner" class="btn btn-info spaced-button" @click="goToModifyPage()">
-                    숙소 수정
-                </button>
-                <button v-if="isOwner" class="btn btn-danger spaced-button" @click="deleteRoom">
-                    숙소 삭제
-                </button>
+                <!-- 숙소 수정과 숙소 삭제 링크 -->
+                <div class="row" style="position: absolute; bottom: 0; right: 0">
+                    <div class="col-md-12 text-right">
+                        <a v-if="isOwner" class="update-link spaced-link" @click="goToModifyPage()">
+                            수정
+                        </a>
+                        <a v-if="isOwner" class="delete-link spaced-link" @click="deleteRoom">
+                            삭제
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -292,5 +291,21 @@ export default {
     color: crimson;
     font-size: 13px;
     list-style: none;
+}
+
+.update-link,
+.delete-link {
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+.update-link {
+    color: #4834d4;
+    margin-right: 20px;
+}
+
+.delete-link {
+    color: #eb4d4b;
 }
 </style>
