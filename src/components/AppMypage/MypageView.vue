@@ -52,6 +52,7 @@
                     >회원정보 수정</router-link
                 >
             </button>
+            <button class="btn btn-outline-danger" @click="signOut()">회원 탈퇴</button>
         </div>
     </div>
 </template>
@@ -174,6 +175,49 @@ export default {
                 .catch((error) => {
                     console.error("Failed to load TossPayments SDK:", error);
                 });
+        },
+        signOut() {
+            if (
+                Swal.fire({
+                    title: "회원 탈퇴하시겠습니까?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axiosInstance
+                            .delete("/member/signout/")
+                            .then((response) => {
+                                console.log(response);
+                                this.$store.dispatch("memberStore/resetMemberState");
+                                sessionStorage.clear();
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "회원 탈퇴되었습니다.",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1500);
+                            })
+                            .catch((err) => {
+                                console.log(err.response.data);
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "error",
+                                    title: `${err.response.data}`,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                            });
+                    }
+                })
+            );
         },
     },
 };
