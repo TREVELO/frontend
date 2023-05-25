@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col">
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6">
-          <div class="col mb-4" v-for="room in roomList" :key="room.id">
+          <div class="col mb-4" v-for="room in formattedRating" :key="room.id">
             <router-link
               :to="{ name: 'roomView', params: { roomId: room.id } }"
             >
@@ -80,6 +80,12 @@ export default {
   },
   computed: {
     ...mapGetters("memberStore", ["getUserinfo"]),
+    formattedRating() {
+      return this.roomList.map((room) => {
+        const roundedRating = Math.round(room.rating * 10) / 10; // 소수점 1자리까지 반올림
+        return { ...room, rating: roundedRating };
+      });
+    },
   },
   methods: {
     goToWriteRoom() {
