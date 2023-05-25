@@ -121,7 +121,13 @@ export default {
                             })
                             .catch((err) => {
                                 console.log(err.response.data);
-                                alert(err.response.data);
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "error",
+                                    title: `${err.response.data}`,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
                             });
                     }
                 })
@@ -170,7 +176,13 @@ export default {
                         })
                         .catch((err) => {
                             console.log(err.response.data);
-                            alert(err.response.data);
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "error",
+                                title: `${err.response.data}`,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
                         });
                 }
             });
