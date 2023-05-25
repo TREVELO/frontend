@@ -185,6 +185,15 @@ export default {
 
                     // this.$store.dispatch("memberStore/fetchUserinfo");
                     // console.log("유저 정보")
+
+                    await Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "회원 가입 되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+
                     this.$emit("close");
                     window.location.reload(true);
                 } catch (error) {
