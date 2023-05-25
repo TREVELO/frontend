@@ -128,12 +128,31 @@ export default {
         ...mapActions("memberStore", ["resetMemberState"]),
     },
     methods: {
-        Logout() {
-            if (confirm("로그아웃하시겠습니까??")) {
-                this.$store.dispatch("memberStore/resetMemberState");
-                sessionStorage.clear();
-                window.location.reload(true);
-            }
+        async Logout() {
+            Swal.fire({
+                title: "로그아웃 하시겠습니까?",
+                showCancelButton: true,
+                confirmButtonText: "예",
+                cancelButtonText: "아니요",
+                icon: "warning",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$store.dispatch("memberStore/resetMemberState");
+                    sessionStorage.clear();
+
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "로그아웃 되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            });
         },
         mainHeaderReload() {
             window.location.reload(true);

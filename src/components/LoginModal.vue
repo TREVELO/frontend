@@ -43,16 +43,6 @@
                         </div>
 
                         <div class="signup-section model-footer" style="text-align: center">
-                            <div v-if="errorshow">
-                                <ul id="errorMsg">
-                                    <li v-for="error in errors" :key="error">
-                                        <b>{{ error }}</b>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="signup-section model-footer" style="text-align: center">
                             회원이 아니신가요? <a href="#a" class="text-info"> 회원 가입</a>.
                         </div>
 
@@ -212,6 +202,8 @@
 <script>
 import axios from "axios";
 import { mapActions, mapGetters } from "vuex";
+import Swal from "sweetalert2";
+
 //import MainHeaderVue from './Main-Header.vue';
 
 export default {
@@ -242,15 +234,24 @@ export default {
         ...mapActions("memberStore", ["setToken", "getToken", "fetchUserinfo"]), // Vuex의 memberStore 모듈의 setToken 액션을 매핑
 
         validationCheck() {
-            this.errors = [];
             if (!this.form.loginId) {
                 this.errors.push("아이디를 입력해주세요.");
-            }
-            if (!this.form.loginPassword) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "아이디를 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else if (!this.form.loginPassword) {
                 this.errors.push("비밀번호를 입력해주세요.");
-            }
-            if (!this.errorshow) {
-                this.errorshow = true;
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "비밀번호를 입력해주세요.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
             }
         },
         async login() {
@@ -287,6 +288,15 @@ export default {
                     }
 
                     console.log("유저 정보");
+
+                    await Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "로그인 되었습니다.",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+
                     this.$emit("close");
                     //{ MainHeaderVue.mainHeaderReload() }
                 } catch (error) {
@@ -296,6 +306,13 @@ export default {
                     if (!this.errorshow) {
                         this.errorshow = true;
                     }
+                    await Swal.fire({
+                        position: "top-end",
+                        icon: "fail",
+                        title: `${this.errors}`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                 }
             }
         },
@@ -316,7 +333,10 @@ export default {
         },
         async findLoginId() {
             if (!this.informationFindRequestDto.email) {
-                alert("이메일은 필수 입력 사항입니다.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "이메일은 필수 입력 사항입니다.",
+                });
                 return;
             }
 
@@ -340,11 +360,17 @@ export default {
         },
         async findPassword() {
             if (!this.informationFindRequestDto.email) {
-                alert("이메일은 필수 입력 사항입니다.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "이메일은 필수 입력 사항입니다.",
+                });
                 return;
             }
             if (!this.informationFindRequestDto.loginId) {
-                alert("아이디는 필수 입력 사항입니다.");
+                await Swal.fire({
+                    icon: "error",
+                    title: "아이디는 필수 입력 사항입니다.",
+                });
                 return;
             }
 

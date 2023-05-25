@@ -126,6 +126,14 @@ export default {
 
                 this.userinfo = this.$store.getters["memberStore/getUserinfo"];
 
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "충전이 완료되었습니다.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+
                 console.log("openPaymentWindow() 종료");
             } catch (error) {
                 console.log(error);
