@@ -50,7 +50,7 @@
         <button class="btn btn-primary" @click="makeReservation">
           예약하기
         </button>
-        <div class="signup-section model-footer" style="text-align: center">
+        <!--<div class="signup-section model-footer" style="text-align: center">
           <pre v-if="errorshow">
                     <ul id="errorMsg">
                         <li v-for="error in errors" :key="error">
@@ -58,7 +58,7 @@
                         </li>
                     </ul>
                 </pre>
-        </div>
+        </div>!-->
         <!-- 숙소 수정과 숙소 삭제 링크 -->
         <div class="row" style="position: absolute; bottom: 0; right: 0">
           <div class="col-md-12 text-right">
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <div>
+    <div v-if="reviewStatus">
       <div style="margin-top: 30px; text-align: left; margin-bottom: 100px">
         총 {{ reviews.length }}개의 리뷰가 있습니다.
         <div style="margin-top: 20px">
@@ -105,27 +105,34 @@
           </div>
         </div>
       </div>
-
-      <div
-        v-for="review in reviews"
-        :key="review.id"
-        style="margin-top: 30px; height: auto; border-bottom: 1px solid"
-      >
-        <div style="text-align: left">
-          <p>{{ review.content }}</p>
-          <div
-            style="display: flex; flex-direction: column; align-items: flex-end"
-          >
-            <star-rating
-              class="small-star"
-              :increment="0.5"
-              :rating="review.rating"
-              :read-only="true"
-              v-bind:star-size="25"
-            ></star-rating>
-            <div class="review-date" style="margin-top: 10px">
-              {{ review.createdat }}
-            </div>
+    </div>
+    <div v-else>
+      <div style="margin-top: 30px; text-align: left; margin-bottom: 100px">
+        총 {{ reviews.length }}개의 리뷰가 있습니다.
+        <div style="margin-top: 20px">
+          <b>숙박한지 14일 이내에만 리뷰를 작성할 수 있습니다.</b>
+        </div>
+      </div>
+    </div>
+    <div
+      v-for="review in reviews"
+      :key="review.id"
+      style="margin-top: 30px; height: auto; border-bottom: 1px solid"
+    >
+      <div style="text-align: left">
+        <p>{{ review.content }}</p>
+        <div
+          style="display: flex; flex-direction: column; align-items: flex-end"
+        >
+          <star-rating
+            class="small-star"
+            :increment="0.5"
+            :rating="review.rating"
+            :read-only="true"
+            v-bind:star-size="25"
+          ></star-rating>
+          <div class="review-date" style="margin-top: 10px">
+            {{ review.createdat }}
           </div>
         </div>
       </div>
@@ -165,6 +172,7 @@ export default {
       reviews: [], // 리뷰 목록을 담을 배열
       newReview: "",
       rating: "0",
+      reviewStatus: false,
     };
   },
   computed: {
@@ -180,6 +188,7 @@ export default {
     this.fetchRoomData(this.roomId);
     this.fetchReservedDates(this.roomId);
     this.fetchReviewData(this.roomId);
+    this.fetchReviewStatus(this.roomId);
   },
   methods: {
     // 사진 선택 시 호출되는 메서드
@@ -383,6 +392,24 @@ export default {
         })
         .catch((error) => {
           console.error("Error registering review:", error);
+        });
+    },
+    fetchReviewStatus(roomId) {
+      const reviewStatusRequestDto = {
+        customerId: this.userinfo.id,
+        roomId: roomId,
+      };
+
+      axiosInstance
+        .post("/reservation/review-availability", reviewStatusRequestDto)
+        .then((response) => {
+          console.log(response.data);
+          this.reviewStatus = response.data;
+          console.log("reviewStatus : " + this.reviewStatus);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log("에러났어요");
         });
     },
   },
